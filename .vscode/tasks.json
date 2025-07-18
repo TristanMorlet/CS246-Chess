@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++20 Project",
+            "type": "shell",
+            "command": "g++", // <-- IMPORTANT: Change this to your compiler command
+            "args": [
+                "-g", // Include debug symbols
+                "-std=c++20",
+                "-fmodules-ts", // Enable C++20 Modules support
+                "${workspaceFolder}/*.cpp",
+                "-o",
+                "${workspaceFolder}/chess", // Output executable named 'chess'
+                "-lX11" // Link the X11 library for graphics
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compiler: g++" // <-- Change this to match your compiler
+        }
+    ]
+}
