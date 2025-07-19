@@ -49,15 +49,35 @@ Board::Board() {
 
 
 void Board::setupPiece(char piece, const Coordinate& coord){
-    
+    Colour colour = (piece >= 'a' && piece <= 'z') ? Colour::Black : Colour::White; //determine the color
+    char p_lower = tolower(piece);
+
+    if (p_lower == 'p') theBoard[coord.row][coord.col] = std::make_unique<Pawn>(colour, coord.row, coord.col);
+    else if (p_lower == 'n') theBoard[coord.row][coord.col] = std::make_unique<Knight>(colour, coord.row, coord.col);
+    else if (p_lower == 'b') theBoard[coord.row][coord.col] = std::make_unique<Bishop>(colour, coord.row, coord.col);
+    else if (p_lower == 'r') theBoard[coord.row][coord.col] = std::make_unique<Rook>(colour, coord.row, coord.col);
+    else if (p_lower == 'q') theBoard[coord.row][coord.col] = std::make_unique<Queen>(colour, coord.row, coord.col);
+    else if (p_lower == 'k') theBoard[coord.row][coord.col] = std::make_unique<King>(colour, coord.row, coord.col);
+
+    notifyObservers();
 }
 
 
 void Board::removePiece(const Coordinate& coord){
-
+    theBoard[coord.row][coord.col] = nullptr;  
+    notifyObservers();
 }
+
+void Board::setTurn(Colour colour){
+    whoseTurn = colour;
+}
+
 const Piece* Board::getPieceAt(const Coordinate& coord) const{
     return theBoard[coord.row][coord.col].get();
+}
+
+Colour Board::getTurn() const {
+    return whoseTurn;
 }
 
 
@@ -68,9 +88,7 @@ bool Board::isMoveValid(const Move& move) const{
 void Board::applyMove(const Move& move){
 
 }
-void Board::setTurn(Colour colour){
 
-}
 
 // Observer pattern methods
 void Board::attach(Observer* o){
