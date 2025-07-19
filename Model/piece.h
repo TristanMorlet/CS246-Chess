@@ -77,7 +77,7 @@ class King : public Piece {
         King(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
-            return colour == Colour::White ? 'K' : 'K';
+            return colour == Colour::White ? 'K' : 'k';
         }
 };
 
