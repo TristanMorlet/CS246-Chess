@@ -24,40 +24,40 @@ public:
 
 class Pawn : public Piece {
 public:
-    Pawn(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+    Pawn(Piece::Colour c, int row, int col): Piece{c,row,col} {}
     std::vector<Move> getValidMoves(const Board &b) const override;
 };
 
 class Knight : public Piece {
     public:
-        Knight(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+        Knight(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
     };
 
 
 class Bishop : public Piece {
     public:
-        Bishop(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+        Bishop(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
     };
 
 
 class Rook : public Piece {
     public:
-        Rook(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+        Rook(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
     };
 
 
 class Queen : public Piece {
     public:
-        Queen(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+        Queen(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
     };
 
 class King : public Piece {
     public:
-        King(Piece::Colour; c, int row, int col): Piece{c,row,col} {}
+        King(Piece::Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
     };
 
