@@ -16,7 +16,7 @@ void TextView::display() {
         cout << row + 1 << " "; // Print the rank number
         // Loop through columns from 'a' to 'h'
         for (int col = 0; col < 8; ++col) {
-            const Piece* piece = Board.getPieceAt(row, col);
+            const Piece* piece = board.getPieceAt(row, col);
             if (piece) {
                 cout << piece->getCharRepresentation();
             } 
