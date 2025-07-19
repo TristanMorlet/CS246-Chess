@@ -22,5 +22,8 @@ std::vector<Move> Queen::getValidMoves(const Board &b) const {
 }
 
 std::vector<Move> King::getValidMoves(const Board &b) const {
-    return {};
+    std::vector<Piece::Move> mv;
+    static const int moveRow[8] = {-1,-1,-1,0,0,1,1,1}; //Possible row/col offsets (moveRow[i] + )
+    static const int moveCol[8] = {-1,0,1,-1,1,-1,0,1}; 
+
 }
