@@ -1,58 +1,47 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <algorithm>
-#include <utility>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <vector>
 #include <memory>
-
+#include <string>
 
 #include "../View/observer.h"
 #include "Piece.h"
 
-using namespace std;
 
-enum class Colour{ // move to .h later if needed
-    White,
-    Black,
-    None
+enum class Colour { White, Black, None };
+
+struct Coordinate {
+    int row;
+    int col;
 };
 
-struct Move{ // move to .h later if needed
-    string to;
-    string from;
-}
+struct Move {
+    Coordinate from;
+    Coordinate to;
+};
 
-class Board{  
-    private:
-        vector<vector<unique_ptr<Piece>>> theBoard; // 2d grid of Pieces
-        vector<Observer *> observers;
+class Board {
+private:
+    std::vector<std::vector<std::unique_ptr<Piece>>> theBoard;
+    std::vector<Observer*> observers;
 
-    public:
+public:
+    Board();
 
+    void setupPiece(char piece, const Coordinate& coord);
+    void removePiece(const Coordinate& coord);
+    const Piece* getPieceAt(const Coordinate& coord) const;
 
-        // ctor
-        Board();
+    
+    bool isMoveValid(const Move& move) const;
+    void applyMove(const Move& move);
+    void setTurn(Colour colour);
 
-
-
-        void setupPiece(char piece, int row, int col);
-        bool isMoveValid(Move move);
-        void applyMove(Move move);
-        void removePiece(int row, int col);
-        void setTurn(Colour colour);
-
-        void attach(Observer* o);
-        void detach(Observer* o);   
-        void notifyObservers();
-        
-        // getters and setters
-        Piece* getPieceAt(int row, int col) const;
-        void setPieceAt(int row, int col, string piece_name); // use for pawn promotion
-
+    // Observer pattern methods
+    void attach(Observer* o);
+    void detach(Observer* o);
+    void notifyObservers();
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "textview.h"
-#include "../Model/Board.h"
+#include "../Model/board.h"
 #include <iostream>
 
 using namespace std;
