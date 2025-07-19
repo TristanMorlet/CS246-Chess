@@ -1,0 +1,46 @@
+#include "board.h"
+
+
+
+Board::Board() {
+// 1. Initialize an 8x8 board with nullptrs
+    /*
+    theBoard: [ [], [], [], [], [], [], [], [] ] *before the for loop*
+    theBoard: [ [nullptr,...,nullptr], ... , [nullptr, ..., nullptr]] *after the for loop*
+    */
+
+    theBoard.resize(8); //create 8 empty rows
+    for (int row = 0; row < 8; ++row) {
+        theBoard[row].resize(8); //create 8 columns for each row
+    }
+
+// 2. Place the Black pieces (top of the board)
+    // Back rank (row 7)
+    theBoard[7][0] = std::make_unique<Rook>(Piece::Colour::Black, 7, 0);
+    theBoard[7][1] = std::make_unique<Knight>(Piece::Colour::Black, 7, 1);
+    theBoard[7][2] = std::make_unique<Bishop>(Piece::Colour::Black, 7, 2);
+    theBoard[7][3] = std::make_unique<Queen>(Piece::Colour::Black, 7, 3);
+    theBoard[7][4] = std::make_unique<King>(Piece::Colour::Black, 7, 4);
+    theBoard[7][5] = std::make_unique<Bishop>(Piece::Colour::Black, 7, 5);
+    theBoard[7][6] = std::make_unique<Knight>(Piece::Colour::Black, 7, 6);
+    theBoard[7][7] = std::make_unique<Rook>(Piece::Colour::Black, 7, 7);
+    // Pawn rank (row 6)
+    for (int col = 0; col < 8; ++col) {
+        theBoard[6][col] = std::make_unique<Pawn>(Piece::Colour::Black, 6, col);
+    }
+
+    // 3. Place the White pieces (bottom of the board)
+    // Pawn rank (row 1)
+    for (int col = 0; col < 8; ++col) {
+        theBoard[1][col] = std::make_unique<Pawn>(Piece::Colour::White, 1, col);
+    }
+    // Back rank (row 0)
+    theBoard[0][0] = std::make_unique<Rook>(Piece::Colour::White, 0, 0);
+    theBoard[0][1] = std::make_unique<Knight>(Piece::Colour::White, 0, 1);
+    theBoard[0][2] = std::make_unique<Bishop>(Piece::Colour::White, 0, 2);
+    theBoard[0][3] = std::make_unique<Queen>(Piece::Colour::White, 0, 3);
+    theBoard[0][4] = std::make_unique<King>(Piece::Colour::White, 0, 4);
+    theBoard[0][5] = std::make_unique<Bishop>(Piece::Colour::White, 0, 5);
+    theBoard[0][6] = std::make_unique<Knight>(Piece::Colour::White, 0, 6);
+    theBoard[0][7] = std::make_unique<Rook>(Piece::Colour::White, 0, 7);
+}
