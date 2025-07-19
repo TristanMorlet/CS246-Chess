@@ -6,20 +6,8 @@
 #include <string>
 
 #include "../View/observer.h"
-#include "Piece.h"
-
-
-enum class Colour { White, Black, None };
-
-struct Coordinate {
-    int row;
-    int col;
-};
-
-struct Move {
-    Coordinate from;
-    Coordinate to;
-};
+#include "../types/types.h"
+#include "piece.h"
 
 class Board {
 private:

@@ -2,6 +2,7 @@
 #define PIECE_H
 
 #include <vector>
+#include "../types/types.h"
 
 class Board;
 
@@ -13,8 +14,6 @@ protected:
     int col;
 
 public:
-    enum class Colour { White, Black };
-    struct Move { int fromRow, fromCol, toRow, toCol; }; //Move struct for moving pieces
 
     virtual ~Piece() {} //dtor
 
@@ -25,7 +24,7 @@ public:
 
 class Pawn : public Piece {
 public:
-    Pawn(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+    Pawn(Colour c, int row, int col): Piece{c,row,col} {}
     std::vector<Move> getValidMoves(const Board &b) const override;
     char getCharRepresentation() const override {
         return colour == Colour::White ? 'P' : 'p'; //For representation, White pieces are capital, black pieces are lowercase
@@ -34,7 +33,7 @@ public:
 
 class Knight : public Piece {
     public:
-        Knight(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+        Knight(Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'N' : 'n';
@@ -45,7 +44,7 @@ class Knight : public Piece {
 
 class Bishop : public Piece {
     public:
-        Bishop(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+        Bishop(Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'B' : 'b';
@@ -55,7 +54,7 @@ class Bishop : public Piece {
 
 class Rook : public Piece {
     public:
-        Rook(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+        Rook(Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'R' : 'r';
@@ -65,7 +64,7 @@ class Rook : public Piece {
 
 class Queen : public Piece {
     public:
-        Queen(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+        Queen(Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'Q' : 'q';
@@ -74,7 +73,7 @@ class Queen : public Piece {
 
 class King : public Piece {
     public:
-        King(Piece::Colour c, int row, int col): Piece{c,row,col} {}
+        King(Colour c, int row, int col): Piece{c,row,col} {}
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'K' : 'k';

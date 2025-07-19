@@ -1,5 +1,5 @@
-#include "Piece.h"
-#include "Board.h"
+#include "piece.h"
+#include "board.h"
 
 std::vector<Move> Pawn::getValidMoves(const Board &b) const { //do later
 /*
@@ -8,7 +8,8 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const { //do later
     if (newRow < 0 || newCol >= 8 || newRow < 0 || newCol >= 8) continue; 
     Coordinate c{newRow = row + moveRow[0], newCol = row + moveCol[0]};
     Piece *p = b.getPieceAt(c);
-    if (p->getColour() != colour) move.push_back({row,col,newRow,newCol});
+    if (p->getColour() != colour) move.push_back({row,col,newRow,newCol}); 
+    NOTE: we refarctored how move works(view ../types/types.h) so it takes two coords now ({ {row, col}, {newRow, newCol} })
 */
 }
 
@@ -22,7 +23,7 @@ std::vector<Move> Knight::getValidMoves(const Board &b) const {
         if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue; //If out of bounds disregard
         Coordinate c{newRow, newCol};
         const Piece *p = b.getPieceAt(c);
-        if (!p || p->getColour() != colour) move.push_back({row,col,newRow,newCol}); //If square is empty or piece at square is opposite colour,
+        if (!p || p->getColour() != colour) move.push_back({ {row, col}, {newRow, newCol} }); //If square is empty or piece at square is opposite colour,
                                                                                     // add to valid moves
     }
     return move;
@@ -36,13 +37,13 @@ std::vector<Move> Bishop::getValidMoves(const Board &b) const {
         for (int i = 0; i < 4; ++i) { //iterate over all possible move combos
             int newRow = row + moveRow[i];
             int newCol = col + moveCol[i];
-            while (newRow > 0 && newRow =< 8 && newCol > 0 && newCol =< 8) { //in each direction, go as far out until you hit another piece
+            while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
                 Coordinate c{newRow, newCol};
                 const Piece *p = b.getPieceAt(c);
                 if (!p) {
-                    move.push_back({row,col,newRow,newCol});
+                    move.push_back({ {row, col}, {newRow, newCol} });
             } else {
-                if (p->getColour() != colour) move.push_back({row, col, newRow, newCol});
+                if (p->getColour() != colour) move.push_back({ {row, col}, {newRow, newCol} });
                 break;
             }
             newRow += moveRow[i];
@@ -59,13 +60,13 @@ std::vector<Move> Rook::getValidMoves(const Board &b) const {
     for (int i = 0; i < 4; ++i) { //iterate over all possible move combos
         int newRow = row + moveRow[i];
         int newCol = col + moveCol[i];
-        while (newRow > 0 && newRow =< 8 && newCol > 0 && newCol =< 8) { //in each direction, go as far out until you hit another piece
+        while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
             Coordinate c{newRow, newCol};
             const Piece *p = b.getPieceAt(c);
             if (!p) {
-                move.push_back({row,col,newRow,newCol});
+                move.push_back({ {row, col}, {newRow, newCol} });
         } else {
-            if (p->getColour() != colour) move.push_back({row, col, newRow, newCol});
+            if (p->getColour() != colour) move.push_back({ {row, col}, {newRow, newCol} });
             break;
         }
         newRow += moveRow[i];
@@ -82,13 +83,13 @@ std::vector<Move> Queen::getValidMoves(const Board &b) const {
     for (int i = 0; i < 8; ++i) { //iterate over all possible move combos
         int newRow = row + moveRow[i];
         int newCol = col + moveCol[i];
-        while (newRow > 0 && newRow =< 8 && newCol > 0 && newCol =< 8) { //in each direction, go as far out until you hit another piece
+        while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
             Coordinate c{newRow, newCol};
             const Piece *p = b.getPieceAt(c);
             if (!p) {
-                move.push_back({row,col,newRow,newCol});
+                move.push_back({ {row, col}, {newRow, newCol} });
         } else {
-            if (p->getColour() != colour) move.push_back({row, col, newRow, newCol});
+            if (p->getColour() != colour) move.push_back({ {row, col}, {newRow, newCol} });
             break;
         }
         newRow += moveRow[i];
@@ -108,7 +109,7 @@ std::vector<Move> King::getValidMoves(const Board &b) const {
         if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue; //If out of bounds disregard
         Coordinate c{newRow, newCol};
         const Piece *p = b.getPieceAt(c);
-        if (!p || p->getColour() != colour) move.push_back({row,col,newRow,newCol}); //If square is empty or piece at square is opposite colour,
+        if (!p || p->getColour() != colour) move.push_back({ {row, col}, {newRow, newCol} }); //If square is empty or piece at square is opposite colour,
                                                                                     // add to valid moves
     }
     return move;

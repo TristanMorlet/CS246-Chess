@@ -1,5 +1,6 @@
 #include "textview.h"
 #include "../Model/board.h"
+#include "../Model/piece.h"
 #include <iostream>
 
 using namespace std;
@@ -16,7 +17,7 @@ void TextView::display() {
         cout << row + 1 << " "; // Print the rank number
         // Loop through columns from 'a' to 'h'
         for (int col = 0; col < 8; ++col) {
-            const Piece* piece = board.getPieceAt(row, col);
+            const Piece* piece = board.getPieceAt({row, col});
             if (piece) {
                 cout << piece->getCharRepresentation();
             } 
@@ -24,9 +25,9 @@ void TextView::display() {
                 // If the square is empty, print space or underscore
                 // A common trick is to check if the sum of coordinates is even or odd
                 if ((row + col) % 2 == 0) {
-                    cout << ' '; // White square
-                } else {
                     cout << '_'; // Dark square
+                } else {
+                    cout << ' '; // White square
                 }
             }
         }
