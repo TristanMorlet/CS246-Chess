@@ -19,7 +19,7 @@ public:
     virtual ~Piece() {} //dtor
 
     Colour getColour() const { return colour; }
-    virtual std::vector<Move> getValidMoves(const Board&) const = 0;
+    virtual std::vector<Move> getValidMoves(const Board&) const = 0; //method to find all valid moves for pieces
     virtual char getCharRepresentation() const = 0; //Get char representation for pieces
 };
 
