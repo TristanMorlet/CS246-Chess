@@ -1,8 +1,11 @@
 #include <algorithm>
 #include <utility>
-#include <
-#include
-#include
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+
+#include "observer.h"
 
 using namespace std;
 
