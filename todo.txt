@@ -1,0 +1,18 @@
+Need to add a king's line of sight check. Idk which file
+
+Thought process:
+
+Seperate function to call getValidMoves for all pieces from king's perspective. 
+Ex: I call getValidMoves 
+
+bool inCheck(king location) {
+    if (getLocation(queen) == Queen::getValidMove(kingLoc)) return true;
+    if (getLocation(bishop) == Bishop:getValidMove(kingLoc)) return true;
+    if (getLocation(rook) == Rook::getValidMove(kingLoc)) return true;
+    if (getLocation(Knight) == Knight::getValidMove(kingLoc)) return true;
+    if (getlocation(pawn) == Kingloc+1diag || getLocation(pawn) == kingLoc-1diag) return true;
+    else return false;
+}
+
+like basically if a king can see a piece on that pieces sight line, check is true. 
+This should be called before every turn
