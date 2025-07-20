@@ -51,7 +51,7 @@ Board::Board(const Board& other) : whoseTurn{other.whoseTurn} {
     // 1. Initialize the new board to be an 8x8 grid of nullptrs
     theBoard.resize(8);
     for (int i = 0; i < 8; ++i) {
-        theBoard[i].resize(8, nullptr);
+        theBoard[i].resize(8);
     }
 
     // 2. Loop through the 'other' board and clone each piece
@@ -123,6 +123,7 @@ bool Board::isMoveValid(const Move& move) const {
         return false;
     }
 
+    /*
     // 3. Check if this move would put your own king in check.
     // To do this, we simulate the move on a temporary copy of the board.
     Board tempBoard = *this; // Requires a copy constructor for Board
@@ -145,7 +146,7 @@ bool Board::isMoveValid(const Move& move) const {
     if (tempBoard.isDanger(kingPos, p->getColour())) {
         return false;
     }
-
+    */
     return true;
 }
 

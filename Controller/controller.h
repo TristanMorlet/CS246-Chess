@@ -4,14 +4,15 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "../Model/board.h"
+#include "../Model/game.h"
 #include <iostream>
 #include <string>
 
 class Controller {
     // temp owns board
     private:
-        Board board;
+        Game game;
+        Coordinate parseCoordinate(const std::string& s);
 
     // later code
     // Game game;

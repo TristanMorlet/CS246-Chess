@@ -2,6 +2,7 @@
 #define PIECE_H
 
 #include <vector>
+#include <memory>
 #include "../types/types.h"
 
 class Board;
