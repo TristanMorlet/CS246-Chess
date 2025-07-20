@@ -8,9 +8,9 @@ class Board;
 
 class Piece { 
 protected:
-    Piece(Colour colour, int row, int col): colour{colour}, row{row}, col{col} {} //define piece
+    Piece(Colour colour, int row, int col): colour{colour}, firstMove{true}, row{row}, col{col} {} //define piece
     Colour colour; //define colour
-    bool firstMove = false; //For castling and double pawn moves and maybe en passant
+    bool firstMove; //For castling and double pawn moves and maybe en passant
     int row;
     int col;
 
@@ -21,6 +21,18 @@ public:
     Colour getColour() const { return colour; }
     virtual std::vector<Move> getValidMoves(const Board&) const = 0; //method to find all valid moves for pieces
     virtual char getCharRepresentation() const = 0; //Get char representation for pieces
+
+    //NEW METHODS NEEDED FOR BOARD
+    virtual std::unique_ptr<Piece> clone() const = 0;   //For boards copy ctor to work
+
+    void setPosition(int r, int c) {
+        row = r;
+        col = c;
+    }
+
+    void setMoved() {
+        firstMove = false;
+    }
 };
 
 class Pawn : public Piece {
@@ -30,6 +42,10 @@ public:
     char getCharRepresentation() const override {
         return colour == Colour::White ? 'P' : 'p'; //For representation, White pieces are capital, black pieces are lowercase
     }
+
+    std::unique_ptr<Piece> clone() const override {
+        return std::make_unique<Pawn>(*this); // Creates a copy of the current Pawn
+    }
 };
 
 class Knight : public Piece {
@@ -38,6 +54,10 @@ class Knight : public Piece {
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'N' : 'n';
+        }
+
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Knight>(*this); // Creates a copy of the current Pawn
         }
 
 };
@@ -50,6 +70,11 @@ class Bishop : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'B' : 'b';
         }
+
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Bishop>(*this); // Creates a copy of the current Pawn
+        }
+        
 };
 
 
@@ -59,6 +84,10 @@ class Rook : public Piece {
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'R' : 'r';
+        }
+
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Rook>(*this); // Creates a copy of the current Pawn
         }
 };
 
@@ -70,6 +99,10 @@ class Queen : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'Q' : 'q';
         }
+
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<Queen>(*this); // Creates a copy of the current Pawn
+        }
     };
 
 class King : public Piece {
@@ -78,6 +111,10 @@ class King : public Piece {
         std::vector<Move> getValidMoves(const Board &b) const override;
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'K' : 'k';
+        }
+
+        std::unique_ptr<Piece> clone() const override {
+            return std::make_unique<King>(*this); // Creates a copy of the current Pawn
         }
 };
 

@@ -4,7 +4,7 @@ using namespace std;
 
 
 
-Board::Board() {
+Board::Board() : whoseTurn{Colour::White} {
 // 1. Initialize an 8x8 board with nullptrs
     /*
     theBoard: [ [], [], [], [], [], [], [], [] ] *before the for loop*
@@ -47,6 +47,27 @@ Board::Board() {
     theBoard[0][7] = make_unique<Rook>(Colour::White, 0, 7);
 }
 
+Board::Board(const Board& other) : whoseTurn{other.whoseTurn} {
+    // 1. Initialize the new board to be an 8x8 grid of nullptrs
+    theBoard.resize(8);
+    for (int i = 0; i < 8; ++i) {
+        theBoard[i].resize(8, nullptr);
+    }
+
+    // 2. Loop through the 'other' board and clone each piece
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const Piece* p = other.getPieceAt({r, c});
+            if (p) {
+                // If a piece exists on the other board, clone it for this board
+                theBoard[r][c] = p->clone();
+            }
+        }
+    }
+    
+    // We intentionally do NOT copy the observers. The temporary board
+    // used for move validation does not need to be displayed.
+}
 
 void Board::setupPiece(char piece, const Coordinate& coord){
     Colour colour = (piece >= 'a' && piece <= 'z') ? Colour::Black : Colour::White; //determine the color
@@ -81,35 +102,126 @@ Colour Board::getTurn() const {
 }
 
 
-bool Board::isMoveValid(const Move& move) const{
-    return true;
+bool Board::isMoveValid(const Move& move) const {
+    const Piece* p = getPieceAt(move.from);
 
-}
-void Board::applyMove(const Move& move){
+    // 1. Basic checks: piece exists and belongs to the current player
+    if (!p || p->getColour() != whoseTurn) {
+        return false;
+    }
 
-}
+    // 2. Check if the destination is a valid move for that piece type
+    std::vector<Move> validMoves = p->getValidMoves(*this);
+    bool isPossibleMove = false;
+    for (const auto& validMove : validMoves) {
+        if (validMove.to.row == move.to.row && validMove.to.col == move.to.col) {
+            isPossibleMove = true;
+            break;
+        }
+    }
+    if (!isPossibleMove) {
+        return false;
+    }
 
-//To check if any piece is in danger
-bool Board::isDanger(const Coordinate& sq, Colour bw) const{
-    for (int row=0;row<8;++row)
-        for (int col=0;col<8;++col) {
-            const Piece* p = getPieceAt({row,col});
-            if (!p || p->getColour() == bw) continue;
-            char ch = p->getCharRepresentation();
-            if (ch == 'P' || ch == 'p') { //Pawns are special cases; moves directly forward cannot capture
-                int dir = (p->getColour()==Colour::White) ? 1: -1;
-                int tempRow = row + dir;
-                if (tempRow == sq.row) { //only check if isDanger is looking for the row
-                    if (col-1 == sq.col || col+1 == sq.col) return true; //if sq is on either "attack", true
-                }
-                continue;
-            }
-            for (const Move& m : p->getValidMoves(*this)) { //We can just callg etValidMoves normally for the rest (every move can be a capture for other pieces)
-                if (m.to.row == sq.row && m.to.col == sq.col)
-                    return true;
+    // 3. Check if this move would put your own king in check.
+    // To do this, we simulate the move on a temporary copy of the board.
+    Board tempBoard = *this; // Requires a copy constructor for Board
+    tempBoard.applyMove(move);
+
+    // Find the king of the player who just moved
+    Coordinate kingPos = {-1, -1};
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const Piece* tempP = tempBoard.getPieceAt({r, c});
+            if (tempP && tempP->getColour() == p->getColour() && (tolower(tempP->getCharRepresentation()) == 'k')) {
+                kingPos = {r, c};
+                break;
             }
         }
-    return false;
+        if (kingPos.row != -1) break;
+    }
+
+    // If the king is now in danger on the temporary board, the move is illegal.
+    if (tempBoard.isDanger(kingPos, p->getColour())) {
+        return false;
+    }
+
+    return true;
+}
+
+void Board::applyMove(const Move& move) {
+    // Use std::move to transfer ownership of the piece
+    theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
+    
+    Piece* p = theBoard[move.to.row][move.to.col].get();
+    if (p) {
+        // Update the piece's internal state
+        p->setPosition(move.to.row, move.to.col);
+        p->setMoved();
+    }
+    
+    
+    whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
+    
+    notifyObservers();
+}
+
+// This version does NOT call getValidMoves, avoiding infinite recursion.
+bool Board::isDanger(const Coordinate& sq, Colour bw) const {
+    Colour enemyColour = (bw == Colour::White) ? Colour::Black : Colour::White;
+
+    // Check for attacks from sliding pieces (Rook, Bishop, Queen)
+    int dirs[8][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
+    for (int i = 0; i < 8; ++i) {
+        Coordinate current = sq;
+        while (true) {
+            current.row += dirs[i][0];
+            current.col += dirs[i][1];
+            if (current.row < 0 || current.row >= 8 || current.col < 0 || current.col >= 8) break;
+            
+            const Piece* p = getPieceAt(current);
+            if (p) {
+                if (p->getColour() == enemyColour) {
+                    char type = tolower(p->getCharRepresentation());
+                    // Diagonal attack (Bishop or Queen)
+                    if (i >= 4 && (type == 'b' || type == 'q')) return true;
+                    // Straight attack (Rook or Queen)
+                    if (i < 4 && (type == 'r' || type == 'q')) return true;
+                }
+                break; // Path is blocked by a piece
+            }
+        }
+    }
+
+    // Check for attacks from Knights
+    int knight_dirs[8][2] = {{-2,-1}, {-2,1}, {-1,-2}, {-1,2}, {1,-2}, {1,2}, {2,-1}, {2,1}};
+    for (int i = 0; i < 8; ++i) {
+        Coordinate k_pos = {sq.row + knight_dirs[i][0], sq.col + knight_dirs[i][1]};
+        const Piece* p = getPieceAt(k_pos);
+        if (p && p->getColour() == enemyColour && tolower(p->getCharRepresentation()) == 'n') {
+            return true;
+        }
+    }
+
+    // Check for attacks from Pawns
+    int pawn_dir = (bw == Colour::White) ? 1 : -1;
+    Coordinate p_left = {sq.row - pawn_dir, sq.col - 1};
+    Coordinate p_right = {sq.row - pawn_dir, sq.col + 1};
+    const Piece* p1 = getPieceAt(p_left);
+    const Piece* p2 = getPieceAt(p_right);
+    if (p1 && p1->getColour() == enemyColour && tolower(p1->getCharRepresentation()) == 'p') return true;
+    if (p2 && p2->getColour() == enemyColour && tolower(p2->getCharRepresentation()) == 'p') return true;
+
+    // Check for attacks from the enemy King
+    for (int i = 0; i < 8; ++i) {
+        Coordinate k_pos = {sq.row + dirs[i][0], sq.col + dirs[i][1]};
+        const Piece* p = getPieceAt(k_pos);
+        if (p && p->getColour() == enemyColour && tolower(p->getCharRepresentation()) == 'k') {
+            return true;
+        }
+    }
+
+    return false; // The square is safe
 }
 
 
@@ -117,9 +229,16 @@ bool Board::isDanger(const Coordinate& sq, Colour bw) const{
 void Board::attach(Observer* o){
     observers.emplace_back(o);
 }
-void Board::detach(Observer* o){
 
+void Board::detach(Observer* o) {
+    for (auto it = observers.begin(); it != observers.end(); ++it) {
+        if (*it == o) {
+            observers.erase(it);
+            break;
+        }
+    }
 }
+
 void Board::notifyObservers(){
     for (auto& ob : observers) {
         ob->notify();

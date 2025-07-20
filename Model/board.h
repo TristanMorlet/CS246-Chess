@@ -17,6 +17,7 @@ private:
 
 public:
     Board();    // Sets up the 8x8 grid and places the 32 pieces.
+    Board(const Board& other);
 
     // --- Setup Methods ---
     void setupPiece(char piece, const Coordinate& coord); // Places a piece on a specified square for setup.
