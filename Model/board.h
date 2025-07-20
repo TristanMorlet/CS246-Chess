@@ -27,6 +27,7 @@ public:
     // --- Game Logic Methods ---
     bool isMoveValid(const Move& move) const;             // Checks if a proposed move is legal.
     void applyMove(const Move& move);                     // Executes a move, updating the board state.
+    bool isDanger(const Coordinate& sq, Colour bw);       // Checks if a piece can be captured by other pieces.
 
     // --- Accessors (Getters) ---
     const Piece* getPieceAt(const Coordinate& coord) const; // Returns a const pointer to the piece at a coordinate.

@@ -89,6 +89,29 @@ void Board::applyMove(const Move& move){
 
 }
 
+//To check if any piece is in danger
+bool Board::isDanger(const Coordinate& sq, Colour bw) {
+    for (int row=0;row<8;++row)
+        for (int col=0;col<8;++col) {
+            const Piece* p = getPieceAt({row,col});
+            if (!p || p->getColour() == bw) continue;
+            char ch = p->getCharRepresentation();
+            if (ch == 'P' || ch == 'p') { //Pawns are special cases; moves directly forward cannot capture
+                int dir = (p->getColour()==Colour::White) ? 1: -1;
+                int tempRow = row + dir;
+                if (tempRow == sq.row) { //only check if isDanger is looking for the row
+                    if (col-1 == sq.col || col+1 == sq.col) return true; //if sq is on either "attack", true
+                }
+                continue;
+            }
+            for (const Move& m : p->getValidMoves(*this)) { //We can just callg etValidMoves normally for the rest (every move can be a capture for other pieces)
+                if (m.to.row == sq.row && m.to.col == sq.col)
+                    return true;
+            }
+        }
+    return false;
+}
+
 
 // Observer pattern methods
 void Board::attach(Observer* o){
