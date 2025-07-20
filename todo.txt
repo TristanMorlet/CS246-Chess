@@ -1,18 +1,11 @@
-Need to add a king's line of sight check. Idk which file
+Ok I added a pretty simple solution (isDanger to board)
+To generalize I think we add a flag to Move to check if a move would be "dangerous".
+^Can be used for higher level ai for an avoid capture gamestyle.
+I also think we add a flag for "hasMoved" to Move for first move game logic. 
+just do like int hasMoved = 0. We can increment it every time and if != 0 then no more fun moves
+^Can also be a bonus ft? We can pretty easily do total moves or like "most used piece" idk
 
-Thought process:
 
-Seperate function to call getValidMoves for all pieces from king's perspective. 
-Ex: I call getValidMoves 
-
-bool inCheck(king location) {
-    if (getLocation(queen) == Queen::getValidMove(kingLoc)) return true;
-    if (getLocation(bishop) == Bishop:getValidMove(kingLoc)) return true;
-    if (getLocation(rook) == Rook::getValidMove(kingLoc)) return true;
-    if (getLocation(Knight) == Knight::getValidMove(kingLoc)) return true;
-    if (getlocation(pawn) == Kingloc+1diag || getLocation(pawn) == kingLoc-1diag) return true;
-    else return false;
-}
-
-like basically if a king can see a piece on that pieces sight line, check is true. 
-This should be called before every turn
+We could also even add levels to the human stuff for fun
+Like if we're on training mode we can issue a warning to player if move is dangerous
+Later obviously
