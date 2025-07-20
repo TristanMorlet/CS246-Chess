@@ -1,30 +1,36 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "piece.h"
+#include "../View/observer.h"
+#include "../types/types.h"
+
 #include <vector>
 #include <memory>
 #include <string>
-
-#include "../View/observer.h"
-#include "../types/types.h"
-#include "piece.h"
 
 class Board {
 private:
     std::vector<std::vector<std::unique_ptr<Piece>>> theBoard;
     std::vector<Observer*> observers;
+    Colour whoseTurn; // Tracks the colour of the current player
 
 public:
-    Board();
+    Board();    // Sets up the 8x8 grid and places the 32 pieces.
 
-    void setupPiece(char piece, const Coordinate& coord);
-    void removePiece(const Coordinate& coord);
-    const Piece* getPieceAt(const Coordinate& coord) const;
+    // --- Setup Methods ---
+    void setupPiece(char piece, const Coordinate& coord); // Places a piece on a specified square for setup.
+    void removePiece(const Coordinate& coord);            // Removes any piece from a specified square for setup.
+    void setTurn(Colour colour);                          // Sets which colour's turn it is (for setup mode).
 
     
-    bool isMoveValid(const Move& move) const;
-    void applyMove(const Move& move);
-    void setTurn(Colour colour);
+    // --- Game Logic Methods ---
+    bool isMoveValid(const Move& move) const;             // Checks if a proposed move is legal.
+    void applyMove(const Move& move);                     // Executes a move, updating the board state.
+
+    // --- Accessors (Getters) ---
+    const Piece* getPieceAt(const Coordinate& coord) const; // Returns a const pointer to the piece at a coordinate.
+    Colour getTurn() const;                                 // Returns the colour of the player whose turn it is.(NEW NOT IN UML)
 
     // Observer pattern methods
     void attach(Observer* o);
