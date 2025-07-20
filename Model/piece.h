@@ -10,6 +10,7 @@ class Piece {
 protected:
     Piece(Colour colour, int row, int col): colour{colour}, row{row}, col{col} {} //define piece
     Colour colour; //define colour
+    bool firstMove = false; //For castling and double pawn moves and maybe en passant
     int row;
     int col;
 

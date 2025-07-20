@@ -22,7 +22,7 @@ std::vector<Move> Knight::getValidMoves(const Board &b) const {
     return move;
 }
 
-// King move logic is the same as a rook, however they cannot endanger themselves.
+// King move logic is the same as a knight, however they cannot endanger themselves.
 std::vector<Move> King::getValidMoves(const Board &b) const {
     std::vector<Move> move;
     //2 arrays allow for every move combo
