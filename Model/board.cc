@@ -90,7 +90,7 @@ void Board::applyMove(const Move& move){
 }
 
 //To check if any piece is in danger
-bool Board::isDanger(const Coordinate& sq, Colour bw) {
+bool Board::isDanger(const Coordinate& sq, Colour bw) const{
     for (int row=0;row<8;++row)
         for (int col=0;col<8;++col) {
             const Piece* p = getPieceAt({row,col});
