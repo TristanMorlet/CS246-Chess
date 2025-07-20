@@ -11,7 +11,7 @@ std::vector<Move> Knight::getValidMoves(const Board &b) const {
     for (int i = 0; i < 8; ++i) { //iterate over all possible move combos
         int newRow = row + moveRow[i];
         int newCol = col + moveCol[i];
-        if (newRow =< 0 || newRow > 8 || newCol =< 0 || newCol > 8) continue; //If out of bounds disregard
+        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue; //If out of bounds disregard
         Coordinate c{newRow, newCol};
         const Piece *p = b.getPieceAt(c);
         if (!p || p->getColour() != colour) move.push_back({ {row, col}, c }); //If square is empty or piece at square is opposite colour,
@@ -29,7 +29,7 @@ std::vector<Move> King::getValidMoves(const Board &b) const {
     for (int i = 0; i < 8; ++i) { //iterate over all possible move combos
         int newRow = row + moveRow[i];
         int newCol = col + moveCol[i];
-        if (newRow < 0 || newRow => 8 || newCol < 0 || newCol => 8) continue; //If out of bounds disregard
+        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue; //If out of bounds disregard
         Coordinate c{newRow, newCol};
         const Piece *p = b.getPieceAt(c);
         if (b.isDanger(c, colour)) continue; //If move puts king in check, invalid move
@@ -49,7 +49,7 @@ std::vector<Move> Queen::getValidMoves(const Board &b) const {
         int newCol = col + moveCol[i];
         //to accomodate for the unbounded move in any direction,
         //for each pair in the array, we keep going out until we hit a piece
-        while (newRow => 0 && newRow < 8 && newCol => 0 && newCol < 8) {
+        while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
             Coordinate c{newRow, newCol};
             const Piece *p = b.getPieceAt(c);
             if (!p) { //If space is empty (piece is nullptr), its a valid move
@@ -73,7 +73,7 @@ std::vector<Move> Bishop::getValidMoves(const Board &b) const {
         for (int i = 0; i < 4; ++i) { //iterate over all possible move combos
             int newRow = row + moveRow[i];
             int newCol = col + moveCol[i];
-            while (newRow => 0 && newRow < 8 && newCol => 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
+            while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
                 Coordinate c{newRow, newCol};
                 const Piece *p = b.getPieceAt(c);
                 if (!p) {
@@ -97,7 +97,7 @@ std::vector<Move> Rook::getValidMoves(const Board &b) const {
     for (int i = 0; i < 4; ++i) { //iterate over all possible move combos
         int newRow = row + moveRow[i];
         int newCol = col + moveCol[i];
-        while (newRow => 0 && newRow < 8 && newCol => 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
+        while (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) { //in each direction, go as far out until you hit another piece
             Coordinate c{newRow, newCol};
             const Piece *p = b.getPieceAt(c);
             if (!p) {
@@ -116,49 +116,68 @@ std::vector<Move> Rook::getValidMoves(const Board &b) const {
 //Pawns behave differently depending on black or white.
 //Since the validity of a move differs on every single case, it's easier to hard code all move possibilities
 std::vector<Move> Pawn::getValidMoves(const Board &b) const {
-    std::vector<Move> move;
-    Coordinate c{row, col};
-if (colour == Colour::White) { //Check for colour first. This determines which way we should be checking for valid moves
-    c.row = row + 1;
-    c.col = col;
-    //If square in front of the piece is empty, add to valid moves
-    if (c.row <= 8 && !b.getPieceAt(c)) {
-        move.push_back({ {row, col}, c });
-        if (row == 1) { //If pawn is on second rank, check if it can perform the double move (check if rank 4 is empty)
-            ++c.row;
-            if (!b.getPieceAt(c)) move.push_back({ {row, col}, c });
+    std::vector<Move> moves;
+
+    if (colour == Colour::White) {
+        // --- 1. Standard one-square move ---
+        Coordinate one_fwd{row + 1, col};
+        if (one_fwd.row < 8 && !b.getPieceAt(one_fwd)) {
+            moves.push_back({ {row, col}, one_fwd });
+
+            // --- 2. Two-square initial move ---
+            // This can only happen if the first square is also empty.
+            if (row == 1) {
+                Coordinate two_fwd{row + 2, col};
+                if (!b.getPieceAt(two_fwd)) {
+                    moves.push_back({ {row, col}, two_fwd });
+                }
+            }
+        }
+
+        // --- 3. Captures ---
+        Coordinate cap_right{row + 1, col + 1};
+        if (cap_right.row < 8 && cap_right.col < 8) {
+            if (const Piece *p = b.getPieceAt(cap_right)) {
+                if (p->getColour() == Colour::Black) moves.push_back({ {row, col}, cap_right });
+            }
+        }
+        Coordinate cap_left{row + 1, col - 1};
+        if (cap_left.row < 8 && cap_left.col >= 0) { // Fixed operator
+            if (const Piece *p = b.getPieceAt(cap_left)) {
+                if (p->getColour() == Colour::Black) moves.push_back({ {row, col}, cap_left });
+            }
+        }
+
+    } else { // Black Pawn
+        // --- 1. Standard one-square move ---
+        Coordinate one_fwd{row - 1, col};
+        if (one_fwd.row >= 0 && !b.getPieceAt(one_fwd)) { // Fixed boundary
+            moves.push_back({ {row, col}, one_fwd });
+
+            // --- 2. Two-square initial move ---
+            if (row == 6) {
+                Coordinate two_fwd{row - 2, col};
+                if (!b.getPieceAt(two_fwd)) {
+                    moves.push_back({ {row, col}, two_fwd });
+                }
+            }
+        }
+
+        // --- 3. Captures ---
+        Coordinate cap_right{row - 1, col + 1};
+        if (cap_right.row >= 0 && cap_right.col < 8) { // Fixed operator
+            if (const Piece *p = b.getPieceAt(cap_right)) {
+                if (p->getColour() == Colour::White) moves.push_back({ {row, col}, cap_right });
+            }
+        }
+        Coordinate cap_left{row - 1, col - 1};
+        if (cap_left.row >= 0 && cap_left.col >= 0) { // Fixed operator
+            if (const Piece *p = b.getPieceAt(cap_left)) {
+                if (p->getColour() == Colour::White) moves.push_back({ {row, col}, cap_left });
+            }
         }
     }
-    Coordinate capR{row + 1, col + 1}; //Right capture validity. If there is a piece there and piece colour is black, valid move
-    if (capR.row < 8 && capR.col < 8) {
-        if (const Piece *pr = b.getPieceAt(capR))
-            if (pr->getColour() == Colour::Black) move.push_back({ {row, col}, capR });
-    }
-    Coordinate capL{row + 1, col - 1}; //Same logic, on the left
-    if (capL.row < 8 && capL.col => 0) {
-        if (const Piece *pl = b.getPieceAt(capL))
-            if (pl->getColour() == Colour::Black) move.push_back({ {row, col}, capL });
-    }
-} else if (colour == Colour::Black) { //Repeat cases, inverting row increments for black.
-    c.row = row - 1;
-    c.col = col;
-    if (c.row >= 1 && !b.getPieceAt(c)) {
-        move.push_back({ {row, col}, c });
-        if (row == 6) {
-            --c.row;
-            if (!b.getPieceAt(c)) move.push_back({ {row, col}, c });
-        }
-    }
-    Coordinate capR{row - 1, col + 1};
-    if (capR.row => 0 && capR.col < 8) {
-        if (const Piece *pr = b.getPieceAt(capR))
-            if (pr->getColour() == Colour::White) move.push_back({ {row, col}, capR });
-    }
-    Coordinate capL{row - 1, col - 1};
-    if (capL.row => 0 && capL.col => 0) {
-        if (const Piece *pl = b.getPieceAt(capL))
-            if (pl->getColour() == Colour::White) move.push_back({ {row, col}, capL });
-    }
-}
-return move;
+
+    // Note: En passant and pawn promotion logic will be added here later.
+    return moves;
 }
