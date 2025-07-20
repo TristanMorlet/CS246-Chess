@@ -94,7 +94,8 @@ void Board::setTurn(Colour colour){
 }
 
 const Piece* Board::getPieceAt(const Coordinate& coord) const{
-    return theBoard[coord.row][coord.col].get();
+    return (coord.row < 0 || coord.row >= 8 || coord.col < 0 || coord.col >= 8) ? 
+    nullptr : theBoard[coord.row][coord.col].get();
 }
 
 Colour Board::getTurn() const {
@@ -123,7 +124,7 @@ bool Board::isMoveValid(const Move& move) const {
         return false;
     }
 
-    /*
+
     // 3. Check if this move would put your own king in check.
     // To do this, we simulate the move on a temporary copy of the board.
     Board tempBoard = *this; // Requires a copy constructor for Board
@@ -146,7 +147,7 @@ bool Board::isMoveValid(const Move& move) const {
     if (tempBoard.isDanger(kingPos, p->getColour())) {
         return false;
     }
-    */
+    
     return true;
 }
 
