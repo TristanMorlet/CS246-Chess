@@ -11,6 +11,7 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const { //do later
     if (p->getColour() != colour) move.push_back({row,col,newRow,newCol}); 
     NOTE: we refarctored how move works(view ../types/types.h) so it takes two coords now ({ {row, col}, {newRow, newCol} })
 */
+    std::vector<Move> moves;
 }
 
 std::vector<Move> Knight::getValidMoves(const Board &b) const {
