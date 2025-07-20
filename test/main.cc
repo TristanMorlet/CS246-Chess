@@ -1,5 +1,7 @@
 #include "../Controller/controller.h"
-
+/*
+FOR TREEE: g++20 main.cc ../Controller/controller.cc ../Model/game.cc ../Model/board.cc ../Model/piece.cc ../Model/player.cc ../View/textview.cc 
+*/
 int main() {
     // 1. Create the Board. The constructor will set up the initial pieces.
     // Board b;
@@ -17,6 +19,6 @@ int main() {
     // we are simply using c.run, however later we will use c.play to play instead
     Controller c;
     c.run();
-    //  g++20 main.cc ../Controller/controller.cc ../Model/board.cc ../Model/piece.cc ../View/textview.cc
+
     return 0;
 }
