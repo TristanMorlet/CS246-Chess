@@ -193,7 +193,7 @@ bool Board::isMoveValid(const Move& move) const {
     return true;
 }
 
-void Board::applyMove(const Move& move, char promChar) { //new parameter for pawn promotion
+void Board::applyMove(const Move& move, char promChoice) { //new parameter for pawn promotion
     // Use std::move to transfer ownership of the piece
     theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
     
@@ -204,7 +204,7 @@ void Board::applyMove(const Move& move, char promChar) { //new parameter for paw
         p->setMoved();
     }
     //new step that runs when needing pawn promo
-    if (promChar != '\0' && p) { //only runs if promChar has been changed and piece exists for good measure
+    if (promChoice != '\0' && p) { //only runs if promChoice has been changed and piece exists for good measure
         Colour c = p->getColour();            // colour of the pawn
         std::unique_ptr<Piece> np;
         switch (promoChar) {      // create new piece for promo
@@ -236,7 +236,7 @@ void Board::applyMove(const Move& move, char promChar) { //new parameter for paw
             }
         }
     }
-    
+
     whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
     
     notifyObservers();
