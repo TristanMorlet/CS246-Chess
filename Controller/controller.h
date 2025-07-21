@@ -5,6 +5,7 @@
 #define CONTROLLER_H
 
 #include "../Model/game.h"
+#include "../View/textview.h"
 #include <iostream>
 #include <string>
 
@@ -13,6 +14,7 @@ class Controller {
     private:
         Game game;
         Coordinate parseCoordinate(const std::string& s);
+        void enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv);
 
     // later code
     // Game game;

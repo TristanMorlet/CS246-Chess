@@ -85,12 +85,54 @@ void Board::setupPiece(char piece, const Coordinate& coord){
 
 
 void Board::removePiece(const Coordinate& coord){
-    theBoard[coord.row][coord.col] = nullptr;  
-    notifyObservers();
+    if (coord.row >= 0 && coord.row < 8 && coord.col >= 0 && coord.col < 8) {
+        theBoard[coord.row][coord.col] = nullptr;
+        notifyObservers();
+    }
 }
 
 void Board::setTurn(Colour colour){
     whoseTurn = colour;
+}
+
+bool Board::validateSetup() const {
+    int whiteKingCount = 0;
+    int blackKingCount = 0;
+    Coordinate whiteKingPos = {-1, -1};
+    Coordinate blackKingPos = {-1, -1};
+
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const Piece* p = getPieceAt({r, c});
+            if (p) {
+                char type = p->getCharRepresentation();
+                // Rule 2: Check for pawns on the first or last row
+                if (tolower(type) == 'p' && (r == 0 || r == 7)) {
+                    return false; // Invalid: Pawn on back rank
+                }
+                // Rule 1: Count kings and find their positions
+                if (type == 'K') {
+                    whiteKingCount++;
+                    whiteKingPos = {r, c};
+                } else if (type == 'k') {
+                    blackKingCount++;
+                    blackKingPos = {r, c};
+                }
+            }
+        }
+    }
+
+    // Rule 1 check
+    if (whiteKingCount != 1 || blackKingCount != 1) {
+        return false;
+    }
+
+    // Rule 3: Check if either king is in check
+    if (isDanger(whiteKingPos, Colour::White) || isDanger(blackKingPos, Colour::Black)) {
+        return false; 
+    }
+
+    return true; // All conditions met, the setup is valid
 }
 
 const Piece* Board::getPieceAt(const Coordinate& coord) const{
