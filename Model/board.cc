@@ -204,7 +204,7 @@ void Board::applyMove(const Move& move, char promChar) { //new parameter for paw
         p->setMoved();
     }
     //new step that runs when needing pawn promo
-    if (promChar != '\0' && p) { //only runs if promChar has been changed and piece is pawn for good measure
+    if (promChar != '\0' && p) { //only runs if promChar has been changed and piece exists for good measure
         Colour c = p->getColour();            // colour of the pawn
         std::unique_ptr<Piece> np;
         switch (promoChar) {      // create new piece for promo
@@ -215,6 +215,27 @@ void Board::applyMove(const Move& move, char promChar) { //new parameter for paw
             }
             theBoard[move.to.row][move.to.col] = std::move(np);   // overwrite pawn
         }
+    
+    if ( tolower(p->getCharRepresentation() == 'k' && abs(move.to.col - move.from.col) == 2) && p) {
+        //King side castles
+        if (move.to.col == 6) {
+            // Move rook from h file to f file
+            theBoard[move.to.row][5] = std::move(theBoard[move.to.row][7]);
+            if (theBoard[move.to.row][5]) {
+                theBoard[move.to.row][5]->setPosition(move.to.row, 5);
+                theBoard[move.to.row][5]->setMoved();
+            }
+        }
+        // Long castles
+        else if (move.to.col == 2) {
+            // Move rook from a file to d file
+            theBoard[move.to.row][3] = std::move(theBoard[move.to.row][0]);
+            if (theBoard[move.to.row][3]) {
+                theBoard[move.to.row][3]->setPosition(move.to.row, 3);
+                theBoard[move.to.row][3]->setMoved();
+            }
+        }
+    }
     
     whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
     
