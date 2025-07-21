@@ -9,9 +9,9 @@ class Board;
 
 class Piece { 
 protected:
-    Piece(Colour colour, int row, int col): colour{colour}, firstMove{true}, row{row}, col{col} {} //define piece
+    Piece(Colour colour, int row, int col): colour{colour}, moved{false}, row{row}, col{col} {} //define piece
     Colour colour; //define colour
-    bool firstMove; //For castling and double pawn moves and maybe en passant
+    bool moved; //For castling and double pawn moves and maybe en passant
     int row;
     int col;
 
@@ -32,7 +32,7 @@ public:
     }
 
     void setMoved() {
-        firstMove = false;
+        moved = false;
     }
 };
 
@@ -43,7 +43,7 @@ public:
     char getCharRepresentation() const override {
         return colour == Colour::White ? 'P' : 'p'; //For representation, White pieces are capital, black pieces are lowercase
     }
-
+    bool just2Moved = false;
     std::unique_ptr<Piece> clone() const override {
         return std::make_unique<Pawn>(*this); // Creates a copy of the current Pawn
     }

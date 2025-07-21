@@ -34,6 +34,27 @@ std::vector<Move> King::getValidMoves(const Board &b) const {
         const Piece *p = b.getPieceAt(c);
         if (b.isDanger(c, colour)) continue; //If move puts king in check, invalid move
         if (!p || p->getColour() != colour) move.push_back({ {row, col}, c});
+
+        //Special case: Castling. Requires king not in check, no pieces between rook and king, rook and king not moved
+        // and obviously king cannot put himself in danger
+        if (!moved() && !b.isDanger({row, col}, colour)) {
+            // Normal castles
+            const Piece* rook = b.getPieceAt({row, 7});
+            if (rook && !rook->moved() && rook->getColour() == colour) {
+                Coordinate f{row, 5}, g{row, 6};
+                if (!b.getPieceAt(f) && !b.getPieceAt(g) && !b.isDanger(f, colour) && !b.isDanger(g, colour)) {
+                    move.push_back({ {row, col}, g });
+                }
+            }
+            // Long castles
+            const Piece* rookL = b.getPieceAt({row, 0});
+            if (rookL && !rookL->moved() && rookL->getColour() == colour) {
+                Coordinate bf{row, 1}, cf{row, 2}, df{row, 3};
+                if (!b.getPieceAt(bf) && !b.getPieceAt(cf) && !b.getPieceAt(df) && !b.isDanger(cf, colour) && !b.isDanger(df, colour)) {
+                    move.push_back({ {row, col}, cf });
+                }
+            }
+        }
     }
     return move;
 }
@@ -126,7 +147,7 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
 
             // --- 2. Two-square initial move ---
             // This can only happen if the first square is also empty.
-            if (row == 1) {
+            if (row == 1 && !moved()) {
                 Coordinate two_fwd{row + 2, col};
                 if (!b.getPieceAt(two_fwd)) {
                     moves.push_back({ {row, col}, two_fwd });
@@ -155,7 +176,7 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
             moves.push_back({ {row, col}, one_fwd });
 
             // --- 2. Two-square initial move ---
-            if (row == 6) {
+            if (row == 6 && !moved()) {
                 Coordinate two_fwd{row - 2, col};
                 if (!b.getPieceAt(two_fwd)) {
                     moves.push_back({ {row, col}, two_fwd });
@@ -179,5 +200,6 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
     }
 
     // Note: En passant and pawn promotion logic will be added here later.
+    //Pawn promotion
     return moves;
 }

@@ -151,7 +151,7 @@ bool Board::isMoveValid(const Move& move) const {
     return true;
 }
 
-void Board::applyMove(const Move& move) {
+void Board::applyMove(const Move& move, char promChar) { //new parameter for pawn promotion
     // Use std::move to transfer ownership of the piece
     theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
     
@@ -161,7 +161,18 @@ void Board::applyMove(const Move& move) {
         p->setPosition(move.to.row, move.to.col);
         p->setMoved();
     }
-    
+    //new step that runs when needing pawn promo
+    if (promChar != '\0' && p) { //only runs if promChar has been changed and piece is pawn for good measure
+        Colour c = p->getColour();            // colour of the pawn
+        std::unique_ptr<Piece> np;
+        switch (promoChar) {      // create new piece for promo
+            case 'r': np = std::make_unique<Rook>  (c, move.to.row, move.to.col); break;
+            case 'b': np = std::make_unique<Bishop>(c, move.to.row, move.to.col); break;
+            case 'n': np = std::make_unique<Knight>(c, move.to.row, move.to.col); break;
+            default : np = std::make_unique<Queen> (c, move.to.row, move.to.col); break;
+            }
+            theBoard[move.to.row][move.to.col] = std::move(np);   // overwrite pawn
+        }
     
     whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
     
