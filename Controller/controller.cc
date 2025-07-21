@@ -54,7 +54,32 @@ void Controller::run() {
                 m = currentPlayer->getMove(*(game.getBoard()));
             }
 
-            if (!game.makeMove(m)) {
+            if (game.makeMove(m)) {
+                // --- ADD THIS LOGIC ---
+                // After a successful move, check the new game state.
+                GameState currentState = game.getGameState();
+                
+                // Determine which player won, if any
+                std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
+
+                switch (currentState) {
+                    case GameState::Checkmate:
+                        std::cout << "Checkmate! " << winner << " wins!" << std::endl;
+                        gameInProgress = false;
+                        break;
+                    case GameState::Stalemate:
+                        std::cout << "Stalemate!" << std::endl;
+                        gameInProgress = false;
+                        break;
+                    case GameState::Check:
+                        std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
+                        break;
+                    case GameState::InProgress:
+                        // Do nothing, the game continues.
+                        break;
+                }
+
+            } else {
                 std::cout << "Invalid move." << std::endl;
             }
 

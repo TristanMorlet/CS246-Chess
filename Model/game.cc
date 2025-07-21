@@ -2,7 +2,11 @@
 #include <iostream>
 
 Game::Game() : 
-    board{std::make_unique<Board>()}, whitePlayer{nullptr}, blackPlayer{nullptr}, currentPlayer{nullptr} {};
+    board{std::make_unique<Board>()}, 
+    whitePlayer{nullptr}, 
+    blackPlayer{nullptr}, 
+    currentPlayer{nullptr}, 
+    currentState{GameState::InProgress} {};
     
 
 
@@ -26,6 +30,7 @@ void Game::newGame(const std::string& white, const std::string& black) {
     
     // Reset the board to the initial state
     board = std::make_unique<Board>();
+    currentState = GameState::InProgress;
 }
 
 bool Game::makeMove(const Move& m) {
@@ -50,11 +55,64 @@ bool Game::makeMove(const Move& m) {
         board->applyMove(m, promChoice);
         // Switch the current player to the other player.
         currentPlayer = (currentPlayer == whitePlayer.get()) ? blackPlayer.get() : whitePlayer.get();
+
+        updateGameState();
         
         return true; // Return true to indicate success
     } else {
         // If the move is invalid, do nothing to the board state.
         return false; // Return false to indicate failure
+    }
+}
+
+void Game::updateGameState() {
+    // 1. Find the current player's king
+    Coordinate kingPos = {-1, -1};
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const Piece* p = board->getPieceAt({r, c});
+            if (p && p->getColour() == currentPlayer->getColour() && tolower(p->getCharRepresentation()) == 'k') {
+                kingPos = {r, c};
+                break;
+            }
+        }
+        if (kingPos.row != -1) break;
+    }
+
+    // 2. Check if the current player has ANY legal moves
+    bool hasLegalMove = false;
+    for (int r = 0; r < 8; ++r) {
+        for (int c = 0; c < 8; ++c) {
+            const Piece* p = board->getPieceAt({r, c});
+            if (p && p->getColour() == currentPlayer->getColour()) {
+                std::vector<Move> moves = p->getValidMoves(*board);
+                for (const auto& move : moves) {
+                    if (board->isMoveValid(move)) {
+                        hasLegalMove = true;
+                        break;
+                    }
+                }
+            }
+            if (hasLegalMove) break;
+        }
+        if (hasLegalMove) break;
+    }
+
+    // 3. Determine the final game state
+    bool kingInDanger = board->isDanger(kingPos, currentPlayer->getColour());
+
+    if (!hasLegalMove) {
+        if (kingInDanger) {
+            currentState = GameState::Checkmate;
+        } else {
+            currentState = GameState::Stalemate;
+        }
+    } else {
+        if (kingInDanger) {
+            currentState = GameState::Check;
+        } else {
+            currentState = GameState::InProgress;
+        }
     }
 }
 
@@ -64,4 +122,8 @@ const Board* Game::getBoard() const {
 
 Player* Game::getCurrentPlayer() const {
     return currentPlayer;
+}
+
+GameState Game::getGameState() const {
+    return currentState;
 }
