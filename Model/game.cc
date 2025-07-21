@@ -38,7 +38,8 @@ bool Game::makeMove(const Move& m) {
             if (currentPlayer->isHuman()) {
                 while (true) {
                     std::cout << "Promote to (q,r,b,n): ";
-                    std::cin >> std::tolower(promChoice);
+                    std::cin >> promChoice;
+                    promChoice = std::tolower(promChoice);
                     if (promChoice != 'q' && promChoice != 'r' && promChoice != 'b' && promChoice != 'n') continue;
                     else break;
                 }

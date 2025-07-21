@@ -34,6 +34,8 @@ public:
     void setMoved() {
         moved = false;
     }
+    
+    bool hasMoved() const { return moved; }
 };
 
 class Pawn : public Piece {

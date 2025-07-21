@@ -207,7 +207,7 @@ void Board::applyMove(const Move& move, char promChoice) { //new parameter for p
     if (promChoice != '\0' && p) { //only runs if promChoice has been changed and piece exists for good measure
         Colour c = p->getColour();            // colour of the pawn
         std::unique_ptr<Piece> np;
-        switch (promoChar) {      // create new piece for promo
+        switch (promChoice) {      // create new piece for promo
             case 'r': np = std::make_unique<Rook>  (c, move.to.row, move.to.col); break;
             case 'b': np = std::make_unique<Bishop>(c, move.to.row, move.to.col); break;
             case 'n': np = std::make_unique<Knight>(c, move.to.row, move.to.col); break;
@@ -216,7 +216,7 @@ void Board::applyMove(const Move& move, char promChoice) { //new parameter for p
             theBoard[move.to.row][move.to.col] = std::move(np);   // overwrite pawn
         }
     
-    if ( tolower(p->getCharRepresentation() == 'k' && abs(move.to.col - move.from.col) == 2) && p) {
+    if (p && tolower(p->getCharRepresentation()) == 'k' && abs(move.to.col - move.from.col) == 2) {
         //King side castles
         if (move.to.col == 6) {
             // Move rook from h file to f file

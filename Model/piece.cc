@@ -37,10 +37,10 @@ std::vector<Move> King::getValidMoves(const Board &b) const {
 
         //Special case: Castling. Requires king not in check, no pieces between rook and king, rook and king not moved
         // and obviously king cannot put himself in danger
-        if (!moved() && !b.isDanger({row, col}, colour)) {
+        if (!hasMoved() && !b.isDanger({row, col}, colour)) {
             // Normal castles
             const Piece* rook = b.getPieceAt({row, 7});
-            if (rook && !rook->moved() && rook->getColour() == colour) {
+            if (rook && !rook->hasMoved() && rook->getColour() == colour) {
                 Coordinate f{row, 5}, g{row, 6};
                 if (!b.getPieceAt(f) && !b.getPieceAt(g) && !b.isDanger(f, colour) && !b.isDanger(g, colour)) {
                     move.push_back({ {row, col}, g });
@@ -48,7 +48,7 @@ std::vector<Move> King::getValidMoves(const Board &b) const {
             }
             // Long castles
             const Piece* rookL = b.getPieceAt({row, 0});
-            if (rookL && !rookL->moved() && rookL->getColour() == colour) {
+            if (rookL && !rookL->hasMoved() && rookL->getColour() == colour) {
                 Coordinate bf{row, 1}, cf{row, 2}, df{row, 3};
                 if (!b.getPieceAt(bf) && !b.getPieceAt(cf) && !b.getPieceAt(df) && !b.isDanger(cf, colour) && !b.isDanger(df, colour)) {
                     move.push_back({ {row, col}, cf });
@@ -147,7 +147,7 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
 
             // --- 2. Two-square initial move ---
             // This can only happen if the first square is also empty.
-            if (row == 1 && !moved()) {
+            if (row == 1 && !hasMoved()) {
                 Coordinate two_fwd{row + 2, col};
                 if (!b.getPieceAt(two_fwd)) {
                     moves.push_back({ {row, col}, two_fwd });
@@ -176,7 +176,7 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
             moves.push_back({ {row, col}, one_fwd });
 
             // --- 2. Two-square initial move ---
-            if (row == 6 && !moved()) {
+            if (row == 6 && !hasMoved()) {
                 Coordinate two_fwd{row - 2, col};
                 if (!b.getPieceAt(two_fwd)) {
                     moves.push_back({ {row, col}, two_fwd });
