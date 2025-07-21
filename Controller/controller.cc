@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "../View/textview.h"
 #include "../types/types.h" // Assuming you have a types.h for Colour, Coordinate etc.
 #include <iostream>
 #include <string>
@@ -37,11 +36,13 @@ void Controller::run() {
             // Attach the new view to the new board.
             const_cast<Board*>(game.getBoard())->attach(tv.get());
 
-            
+            //const_cast<Board*> is used so we can bypass the constness of .getBoard()
             gameInProgress = true;
             const_cast<Board*>(game.getBoard())->notifyObservers(); // Display the new board
         
-        } else if (cmd == "move" && gameInProgress) {
+        } 
+        
+        else if (cmd == "move" && gameInProgress) {
             Player* currentPlayer = game.getCurrentPlayer();
             Move m;
 
@@ -57,13 +58,66 @@ void Controller::run() {
                 std::cout << "Invalid move." << std::endl;
             }
 
-        } else if (cmd == "resign" && gameInProgress) {
+        } 
+        
+        else if (cmd == "resign" && gameInProgress) {
             // Resign logic will go here
             gameInProgress = false;
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "Black" : "White") << " wins!" << std::endl;
         
-        } else if (cmd == "setup" && !gameInProgress) {
-            // Setup mode logic will go here
+        } 
+        
+        else if (cmd == "setup" && !gameInProgress) {
+            enterSetupMode(gameInProgress, tv);
+
+        }
+    }
+}
+
+void Controller::enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv) {
+    std::string line;
+    
+    // Create a fresh board and view for setup
+    game.newGame("human", "human"); 
+    tv = std::make_unique<TextView>(*(game.getBoard()));
+    Board* board = const_cast<Board*>(game.getBoard());
+    board->attach(tv.get());
+    board->notifyObservers();
+
+    std::cout << "Entered setup mode." << std::endl;
+    while (std::getline(std::cin, line)) {
+        std::stringstream setup_ss{line};
+        std::string setup_cmd;
+        setup_ss >> setup_cmd;
+
+        if (setup_cmd == "+") {
+            char piece;
+            std::string pos;
+            setup_ss >> piece >> pos;
+            board->setupPiece(piece, parseCoordinate(pos));
+        } 
+        
+        else if (setup_cmd == "-") {
+            std::string pos;
+            setup_ss >> pos;
+            board->removePiece(parseCoordinate(pos));
+        } 
+        
+        else if (setup_cmd == "=") {
+            std::string colour_str;
+            setup_ss >> colour_str;
+            if (colour_str == "white") board->setTurn(Colour::White);
+            else if (colour_str == "black") board->setTurn(Colour::Black);
+        } 
+        
+        else if (setup_cmd == "done") {
+            if (board->validateSetup()) {
+                std::cout << "Setup complete. Starting game." << std::endl;
+                gameInProgress = true;
+                break; 
+            } else {
+                std::cout << "Invalid board setup. Please fix before continuing." << std::endl;
+            }
         }
     }
 }

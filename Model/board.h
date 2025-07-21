@@ -23,6 +23,7 @@ public:
     void setupPiece(char piece, const Coordinate& coord); // Places a piece on a specified square for setup.
     void removePiece(const Coordinate& coord);            // Removes any piece from a specified square for setup.
     void setTurn(Colour colour);                          // Sets which colour's turn it is (for setup mode).
+    bool validateSetup() const;                           // Ensures that the setup made by the user is valid
 
     
     // --- Game Logic Methods ---
