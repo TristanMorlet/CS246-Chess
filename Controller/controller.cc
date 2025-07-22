@@ -128,7 +128,7 @@ void Controller::enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>&
             board->removePiece(parseCoordinate(pos));
         } 
         
-        else if (setup_cmd == "=") {
+        else if (setup_cmd == "=") {    //issue here for some reason gives u stalemate
             std::string colour_str;
             setup_ss >> colour_str;
             if (colour_str == "white") board->setTurn(Colour::White);
@@ -137,6 +137,7 @@ void Controller::enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>&
         
         else if (setup_cmd == "done") {
             if (board->validateSetup()) {
+                game.setCurrentPlayer(board->getTurn());
                 std::cout << "Setup complete. Starting game." << std::endl;
                 gameInProgress = true;
                 break; 

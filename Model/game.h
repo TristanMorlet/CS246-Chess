@@ -29,8 +29,10 @@ public:
     // Accessors for the Controller and View
     const Board* getBoard() const;
     Player* getCurrentPlayer() const;
+    void setCurrentPlayer(Colour colour);
 
     GameState getGameState() const;
+
 };
 
 #endif

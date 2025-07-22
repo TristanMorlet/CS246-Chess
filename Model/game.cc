@@ -124,6 +124,15 @@ Player* Game::getCurrentPlayer() const {
     return currentPlayer;
 }
 
+void Game::setCurrentPlayer(Colour colour) {
+    if (colour == Colour::White) {
+        currentPlayer = whitePlayer.get();
+    }
+    else {
+        currentPlayer = blackPlayer.get();
+    }
+}
+
 GameState Game::getGameState() const {
     return currentState;
 }
