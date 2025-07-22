@@ -22,7 +22,8 @@ bool HumanPlayer::isHuman() const {
 }
 
 //computer player impl
-ComputerPlayer::ComputerPlayer(Colour c, std::unique_ptr<Strategy> s) : Player{c} {} // New parameter: strategy
+ComputerPlayer::ComputerPlayer(Colour c, std::unique_ptr<Strategy> s) : 
+    Player{c},  strat{std::move(s)} {} // New parameter: strategy
 
 Move ComputerPlayer::getMove(const Board& b) {
     // AI logic will go here
@@ -30,7 +31,7 @@ Move ComputerPlayer::getMove(const Board& b) {
     // lvl one we hit any piece thats ours call getvalid moves and first valid move we just lowwe it?
     //lvl 2 we just call getvalid moves and first capture move we lowwe it
     // lvl 3 we call getvalidmoves and first safe capture move we lowwe it
-    //lvl 4 openai api key 
+    //lvl 4 openai api key yessirr
     return strat->chooseMove(b, colour);
 }
 

@@ -1,6 +1,6 @@
 #include "../Controller/controller.h"
 /*
-FOR TREEE: g++20 main.cc ../Controller/controller.cc ../Model/game.cc ../Model/board.cc ../Model/piece.cc ../Model/player.cc ../View/textview.cc 
+FOR TREEE: g++20 main.cc ../Controller/controller.cc ../Model/game.cc ../Model/board.cc ../Model/piece.cc ../Model/player.cc ../View/textview.cc ../Model/strategy.cc
 */
 int main() {
     // 1. Create the Board. The constructor will set up the initial pieces.
