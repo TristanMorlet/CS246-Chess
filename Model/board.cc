@@ -280,7 +280,7 @@ bool Board::isDanger(const Coordinate& sq, Colour bw) const {
     }
 
     // Check for attacks from Pawns
-    int pawn_dir = (bw == Colour::White) ? 1 : -1;
+    int pawn_dir = (bw == Colour::White) ? -1 : 1;
     Coordinate p_left = {sq.row - pawn_dir, sq.col - 1};
     Coordinate p_right = {sq.row - pawn_dir, sq.col + 1};
     const Piece* p1 = getPieceAt(p_left);
