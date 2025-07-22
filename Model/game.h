@@ -14,6 +14,9 @@ private:
     std::unique_ptr<Player> blackPlayer;
     Player* currentPlayer; // A raw pointer to track the current player
 
+    GameState currentState;
+    void updateGameState();
+
 public:
     Game();
 
@@ -26,6 +29,10 @@ public:
     // Accessors for the Controller and View
     const Board* getBoard() const;
     Player* getCurrentPlayer() const;
+    void setCurrentPlayer(Colour colour);
+
+    GameState getGameState() const;
+
 };
 
 #endif
