@@ -193,19 +193,35 @@ bool Board::isMoveValid(const Move& move) const {
     return true;
 }
 
-void Board::applyMove(const Move& move, char promChoice) { //new parameter for pawn promotion
+void Board::applyMove(const Move& move, char promChoice) { // New parameter for pawn promotion
+
+    Piece* pp = theBoard[move.from.row][move.from.col].get(); // Need this to check en passant validity
+
+    // En Passant Logic must happen before we move
+    // We check if a pawn moved diagonally and if en passant square == move square
+    if (pp && std::tolower(pp->getCharRepresentation()) == 'p' && std::abs(move.to.col - move.from.col) == 1
+    && !getPieceAt(move.to) && enPassantAvailable && move.to.row == enPassantSquare.row && move.to.col == enPassantSquare.col ) { 
+        int capRow = (pp->getColour() == Colour::White) ? move.to.row - 1 : move.to.row + 1;
+        theBoard[capRow][move.to.col].reset(); // Delete the en passanted pawn
+    }
+
     // Use std::move to transfer ownership of the piece
     theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
     
     Piece* p = theBoard[move.to.row][move.to.col].get();
+    
     if (p) {
         // Update the piece's internal state
         p->setPosition(move.to.row, move.to.col);
         p->setMoved();
     }
-    //new step that runs when needing pawn promo
-    if (promChoice != '\0' && p) { //only runs if promChoice has been changed and piece exists for good measure
-        Colour c = p->getColour();            // colour of the pawn
+
+    // --- Other Special Cases ---
+
+    // Pawn Promotion Logic
+    // We check if promotion choice is changed (Only happens when a pawn promotion is valid)
+    if (promChoice != '\0' && p) {
+        Colour c = p->getColour();
         std::unique_ptr<Piece> np;
         switch (promChoice) {      // create new piece for promo
             case 'r': np = std::make_unique<Rook>  (c, move.to.row, move.to.col); break;
@@ -215,7 +231,9 @@ void Board::applyMove(const Move& move, char promChoice) { //new parameter for p
             }
             theBoard[move.to.row][move.to.col] = std::move(np);   // overwrite pawn
         }
-    
+
+    // Castling Logic
+    // The King can only move 2 spaces when he castles, so that is what we check for
     if (p && tolower(p->getCharRepresentation()) == 'k' && abs(move.to.col - move.from.col) == 2) {
         //King side castles
         if (move.to.col == 6) {
@@ -236,6 +254,14 @@ void Board::applyMove(const Move& move, char promChoice) { //new parameter for p
             }
         }
     }
+
+    // En Passant Checking (next turn)
+    // We check if a pawn moves 2 and set en passant available to true. Does not necessarily mean available move, just that a pawn moved 2
+    // We verify all boxes are checked for en passant elsewhere
+if (p && tolower(p->getCharRepresentation()) == 'p' && abs(move.to.row - move.from.row) == 2) {
+    enPassantAvailable = true;
+    enPassantSquare = {((move.to.row + move.from.row)/2), move.to.col};
+} else enPassantAvailable = false;
 
     whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
     

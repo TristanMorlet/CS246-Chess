@@ -14,6 +14,8 @@ private:
     std::vector<std::vector<std::unique_ptr<Piece>>> theBoard;
     std::vector<Observer*> observers;
     Colour whoseTurn; // Tracks the colour of the current player
+    bool enPassantAvailable = false; // Tracks whether en passant can be played
+    Coordinate enPassantSquare{}; // Where the capture will take place
 
 public:
     Board();    // Sets up the 8x8 grid and places the 32 pieces.
@@ -28,8 +30,11 @@ public:
     
     // --- Game Logic Methods ---
     bool isMoveValid(const Move& move) const;             // Checks if a proposed move is legal.
-    void applyMove(const Move& move, char promChoice = '\0');                     // Executes a move, updating the board state. NEW PARAMETER(promoChar)
+    void applyMove(const Move& move, char promChoice = '\0');                     // Executes a move, updating the board state. NEW PARAMETER(promChoice)
     bool isDanger(const Coordinate& sq, Colour bw) const;       // Checks if a piece can be captured by other pieces.(NEW NOT IN UML)
+    bool isEnPassantAvailable() const { return enPassantAvailable; } //Both new
+    Coordinate getEnPassantSquare() const { return enPassantSquare; }
+
 
     // --- Accessors (Getters) ---
     const Piece* getPieceAt(const Coordinate& coord) const; // Returns a const pointer to the piece at a coordinate.

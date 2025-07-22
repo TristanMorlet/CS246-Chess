@@ -158,14 +158,26 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
         // --- 3. Captures ---
         Coordinate cap_right{row + 1, col + 1};
         if (cap_right.row < 8 && cap_right.col < 8) {
-            if (const Piece *p = b.getPieceAt(cap_right)) {
-                if (p->getColour() == Colour::Black) moves.push_back({ {row, col}, cap_right });
+            const Piece *p = b.getPieceAt(cap_right); 
+            if (p && p->getColour() == Colour::Black) { // Regular Case
+                moves.push_back({ {row, col}, cap_right });
+            }
+            else if (!p && b.isEnPassantAvailable()
+            && cap_right.row == b.getEnPassantSquare().row
+            && cap_right.col == b.getEnPassantSquare().col) { // En Passant Case
+                moves.push_back({ {row, col}, cap_right });
             }
         }
         Coordinate cap_left{row + 1, col - 1};
-        if (cap_left.row < 8 && cap_left.col >= 0) { // Fixed operator
-            if (const Piece *p = b.getPieceAt(cap_left)) {
-                if (p->getColour() == Colour::Black) moves.push_back({ {row, col}, cap_left });
+        if (cap_left.row < 8 && cap_left.col >= 0) {
+            const Piece *p = b.getPieceAt(cap_left);
+            if (p && p->getColour() == Colour::Black) { // Regular Case
+                moves.push_back({ {row, col}, cap_left });
+            }
+            else if (!p && b.isEnPassantAvailable()
+            && cap_right.row == b.getEnPassantSquare().row
+            && cap_right.col == b.getEnPassantSquare().col){ // En Passant Case
+                moves.push_back({ {row, col}, cap_left });
             }
         }
 
@@ -187,19 +199,30 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
         // --- 3. Captures ---
         Coordinate cap_right{row - 1, col + 1};
         if (cap_right.row >= 0 && cap_right.col < 8) { // Fixed operator
-            if (const Piece *p = b.getPieceAt(cap_right)) {
-                if (p->getColour() == Colour::White) moves.push_back({ {row, col}, cap_right });
-            }
+            const Piece *p = b.getPieceAt(cap_right);
+            if (p && p->getColour() == Colour::White) {
+                moves.push_back({ {row, col}, cap_right });
         }
+        else if (!p && b.isEnPassantAvailable()
+        && cap_right.row == b.getEnPassantSquare().row
+        && cap_right.col == b.getEnPassantSquare().col) {
+            moves.push_back({ {row, col}, cap_right });
+        }
+    }
         Coordinate cap_left{row - 1, col - 1};
         if (cap_left.row >= 0 && cap_left.col >= 0) { // Fixed operator
-            if (const Piece *p = b.getPieceAt(cap_left)) {
-                if (p->getColour() == Colour::White) moves.push_back({ {row, col}, cap_left });
-            }
+            const Piece *p = b.getPieceAt(cap_left);
+            if (p && p->getColour() == Colour::White) {
+                moves.push_back({ {row, col}, cap_left });
+        }
+        else if (!p && b.isEnPassantAvailable()
+        && cap_right.row == b.getEnPassantSquare().row
+        && cap_right.col == b.getEnPassantSquare().col) {
+            moves.push_back({ {row, col}, cap_left });
         }
     }
 
     // Note: En passant and pawn promotion logic will be added here later.
-    //Pawn promotion
+}
     return moves;
 }
