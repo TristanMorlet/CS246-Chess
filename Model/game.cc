@@ -1,4 +1,8 @@
 #include "game.h"
+#include "strategy.h"
+#include <memory>         // unique_ptr
+#include <string>         // std::string
+#include <cctype>         // std::tolower
 #include <iostream>
 
 Game::Game() : 
@@ -15,14 +19,14 @@ void Game::newGame(const std::string& white, const std::string& black) {
     if (white == "human") {
         whitePlayer = std::make_unique<HumanPlayer>(Colour::White);
     } else { // Assume "computer"
-        whitePlayer = std::make_unique<ComputerPlayer>(Colour::White);
+        whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L1));
     }
 
     // Create the black player
     if (black == "human") {
         blackPlayer = std::make_unique<HumanPlayer>(Colour::Black);
     } else { // Assume "computer"
-        blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black);
+        blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L1));
     }
     
     // White player always starts

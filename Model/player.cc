@@ -1,4 +1,5 @@
 #include "player.h"
+#include "strategy.h" //Need strat def
 #include <stdexcept>
 
 //player impl
@@ -21,11 +22,16 @@ bool HumanPlayer::isHuman() const {
 }
 
 //computer player impl
-ComputerPlayer::ComputerPlayer(Colour c) : Player{c} {}
+ComputerPlayer::ComputerPlayer(Colour c, std::unique_ptr<Strategy> s) : Player{c} {} // New parameter: strategy
 
 Move ComputerPlayer::getMove(const Board& b) {
     // AI logic will go here
-    return {}; 
+    // design pattern for levels. for lvl 1/2/3 import random on board and run thru getvalid moves for first owned piece
+    // lvl one we hit any piece thats ours call getvalid moves and first valid move we just lowwe it?
+    //lvl 2 we just call getvalid moves and first capture move we lowwe it
+    // lvl 3 we call getvalidmoves and first safe capture move we lowwe it
+    //lvl 4 openai api key 
+    return strat->chooseMove(b, colour);
 }
 
 bool ComputerPlayer::isHuman() const {

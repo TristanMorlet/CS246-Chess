@@ -2,8 +2,11 @@
 #define PLAYER_H
 
 #include "../types/types.h"
+#include "strategy.h"
+#include <memory> // Need for unique_ptr
 
 class Board; // Forward declaration
+class Strategy; // New forward declaration
 
 // Abstract base class for all players
 class Player {
@@ -31,8 +34,9 @@ public:
 
 // Concrete class for computer players
 class ComputerPlayer : public Player {
+    std::unique_ptr<Strategy> strat;
 public:
-    ComputerPlayer(Colour c);
+ComputerPlayer(Colour c, std::unique_ptr<Strategy> s); // NEW PARAMETER (unique_ptr for strat)
     Move getMove(const Board& b) override;
     bool isHuman() const override; // NEW
  };

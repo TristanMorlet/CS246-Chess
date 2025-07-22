@@ -222,6 +222,7 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
     // We check if promotion choice is changed (Only happens when a pawn promotion is valid)
     if (promChoice != '\0' && p) {
         Colour c = p->getColour();
+        theBoard[move.to.row][move.to.col].reset(); // Delete pawn first to avoid seg faults
         std::unique_ptr<Piece> np;
         switch (promChoice) {      // create new piece for promo
             case 'r': np = std::make_unique<Rook>  (c, move.to.row, move.to.col); break;
@@ -229,7 +230,6 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
             case 'n': np = std::make_unique<Knight>(c, move.to.row, move.to.col); break;
             default : np = std::make_unique<Queen> (c, move.to.row, move.to.col); break;
             }
-            theBoard[move.to.row][move.to.col] = std::move(np);   // overwrite pawn
         }
 
     // Castling Logic
