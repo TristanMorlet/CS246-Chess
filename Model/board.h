@@ -16,6 +16,8 @@ private:
     Colour whoseTurn; // Tracks the colour of the current player
     bool enPassantAvailable = false; // Tracks whether en passant can be played
     Coordinate enPassantSquare{}; // Where the capture will take place
+    int moveRule = 0; // 50 move rule
+    bool isCap = false; // If move is capture or not
 
 public:
     Board();    // Sets up the 8x8 grid and places the 32 pieces.

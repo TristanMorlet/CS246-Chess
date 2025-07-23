@@ -205,6 +205,8 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
         theBoard[capRow][move.to.col].reset(); // Delete the en passanted pawn
     }
 
+    Piece* capture = theBoard[move.to.row][move.to.col].get();
+    if (capture) isCap = true;
     // Use std::move to transfer ownership of the piece
     theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
     
@@ -261,6 +263,10 @@ if (p && tolower(p->getCharRepresentation()) == 'p' && abs(move.to.row - move.fr
     enPassantAvailable = true;
     enPassantSquare = {((move.to.row + move.from.row)/2), move.to.col};
 } else enPassantAvailable = false;
+
+// 50 move Rule Checking
+if (isCap || std::tolower(p->getCharRepresentation()) == 'p') moveRule = 0; //If piece is capture or pawn move, reset 50move
+else ++moveRule;
 
     whoseTurn = (whoseTurn == Colour::White) ? Colour::Black : Colour::White;
     
