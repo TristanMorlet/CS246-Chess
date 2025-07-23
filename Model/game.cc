@@ -85,6 +85,24 @@ bool Game::makeMove(const Move& m) {
             }
         // If the move is valid, apply it to the board.
         board->applyMove(m, promChoice);
+
+        // Display the move made by the AI since now made automatically.
+        if (!(currentPlayer->isHuman())){
+
+
+            char colLetters[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+
+            std::string move_str = "";
+            move_str += colLetters[m.from.col];
+            move_str += std::to_string(m.from.row + 1);
+            move_str += " ";
+            move_str += colLetters[m.to.col];
+            move_str += std::to_string(m.to.row + 1);
+            std::cout << '\n' << "AI plays move " << move_str << std::endl;
+
+            
+
+        }
         // Switch the current player to the other player.
         currentPlayer = (currentPlayer == whitePlayer.get()) ? blackPlayer.get() : whitePlayer.get();
 
