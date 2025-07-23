@@ -221,16 +221,15 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
     // Pawn Promotion Logic
     // We check if promotion choice is changed (Only happens when a pawn promotion is valid)
     if (promChoice != '\0' && p) {
-        Colour c = p->getColour();
-        theBoard[move.to.row][move.to.col].reset(); // Delete pawn first to avoid seg faults
-        std::unique_ptr<Piece> np;
-        switch (promChoice) {      // create new piece for promo
-            case 'r': np = std::make_unique<Rook>  (c, move.to.row, move.to.col); break;
-            case 'b': np = std::make_unique<Bishop>(c, move.to.row, move.to.col); break;
-            case 'n': np = std::make_unique<Knight>(c, move.to.row, move.to.col); break;
-            default : np = std::make_unique<Queen> (c, move.to.row, move.to.col); break;
-            }
-        }
+        Colour colour = p->getColour();
+        char p_lower = tolower(promChoice);
+
+        if (p_lower == 'n') theBoard[move.to.row][move.to.col] = std::make_unique<Knight>(colour, move.to.row, move.to.col);
+        else if (p_lower == 'b') theBoard[move.to.row][move.to.col] = std::make_unique<Bishop>(colour, move.to.row, move.to.col);
+        else if (p_lower == 'r') theBoard[move.to.row][move.to.col] = std::make_unique<Rook>(colour, move.to.row, move.to.col);
+        else theBoard[move.to.row][move.to.col] = std::make_unique<Queen>(colour, move.to.row, move.to.col);
+        p = theBoard[move.to.row][move.to.col].get();
+    }
 
     // Castling Logic
     // The King can only move 2 spaces when he castles, so that is what we check for

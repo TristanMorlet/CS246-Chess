@@ -96,8 +96,10 @@ void Controller::run() {
             enterSetupMode(gameInProgress, tv);
         }
         else {
-            std::cout << "Invalid Command." << endl;
-            std::cout << "Here is a list of Valid Commands: move pos1 pos2, resign, setup, game <human or computer[1-4]> <human or computer[1-4]>" << std::endl;
+            if (cmd != "") {
+                std::cout << "Invalid Command." << endl;
+                std::cout << "Here is a list of Valid Commands: move pos1 pos2, resign, setup, game <human or computer[1-4]> <human or computer[1-4]>" << std::endl;
+            }
         }
     }
 }
