@@ -19,7 +19,7 @@ void Controller::run() {
 
     // Create the view and attach it to the board
     std::unique_ptr<TextView> tv = nullptr;
-    std::cout << "Welcome to our game of Chess. Please enter on of the following to begin: 1.game <human or computer[1-4]> <human or computer[1-4]> 2. setup" << std::endl;
+    std::cout << "Welcome to our game of Chess. Please enter on of the following to begin: 1. game <human or computer[1-4]> <human or computer[1-4]> 2. setup" << std::endl;
     while (std::getline(std::cin, line)) {
         std::stringstream ss{line};
         std::string cmd;
@@ -39,10 +39,78 @@ void Controller::run() {
             //const_cast<Board*> is used so we can bypass the constness of .getBoard()
             gameInProgress = true;
             const_cast<Board*>(game.getBoard())->notifyObservers(); // Display the new board
+
+
+
+            // TREE CHANGES, AI players should NOT be given move commands, because they make the moves themselves,
+            Player* currentPlayer = game.getCurrentPlayer();
+
+            while (!(currentPlayer->isHuman())) {
+                if (!gameInProgress) {
+                    break;
+                }
+                // AI player is on white and has first turn, after first board display, display the first move made by the AI player
+                Move m;
+                m = currentPlayer->getMove(*(game.getBoard()));
+
+                // make this a helper? used twice now.
+                if (game.makeMove(m)) {
+                    // --- ADD THIS LOGIC ---
+                    // After a successful move, check the new game state.
+                    GameState currentState = game.getGameState();
+                    
+                    // Determine which player won, if any
+                    std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
+
+                    switch (currentState) {
+                        case GameState::Checkmate:
+                            std::cout << "Checkmate! " << winner << " wins!" << std::endl;
+                            gameInProgress = false;
+                            break;
+                        case GameState::Stalemate:
+                            std::cout << "Stalemate!" << std::endl;
+                            gameInProgress = false;
+                            break;
+                        case GameState::Check:
+                            std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
+                            break;
+                        case GameState::InProgress:
+                            // Do nothing, the game continues.
+                            break;
+                    }
+                    Player* nextPlayer = game.getCurrentPlayer();
+                    if (gameInProgress && !nextPlayer->isHuman()) {
+                        
+                        Move aiMove = nextPlayer->getMove(*(game.getBoard()));
+                        if (game.makeMove(aiMove)) {
+                            // --- After a successful AI move, check the game state AGAIN ---
+                            GameState aiMoveState = game.getGameState();
+                            std::string aiWinner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
+
+                            switch (aiMoveState) {
+                                case GameState::Checkmate:
+                                    std::cout << "Checkmate! " << aiWinner << " wins!" << std::endl;
+                                    gameInProgress = false;
+                                    break;
+                                case GameState::Stalemate:
+                                    std::cout << "Stalemate!" << std::endl;
+                                    gameInProgress = false;
+                                    break;
+                                case GameState::Check:
+                                    std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
+                                    break;
+                                case GameState::InProgress:
+                                    // Do nothing, the game continues.
+                                    continue;
+                            }
+                        }
+                    }
+
+                }
+
+            }
         
-        } 
-        
-        else if (cmd == "move" && gameInProgress) {
+        } else if (cmd == "move" && gameInProgress) {
             Player* currentPlayer = game.getCurrentPlayer();
             Move m;
 
@@ -50,11 +118,7 @@ void Controller::run() {
                 std::string from, to;
                 ss >> from >> to;
                 m = {parseCoordinate(from), parseCoordinate(to)};
-            } else { // It's a computer's turn
-                m = currentPlayer->getMove(*(game.getBoard()));
-            }
-
-            if (game.makeMove(m)) {
+                if (game.makeMove(m)) {
                 // --- ADD THIS LOGIC ---
                 // After a successful move, check the new game state.
                 GameState currentState = game.getGameState();
@@ -75,28 +139,50 @@ void Controller::run() {
                         std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
                         break;
                     case GameState::InProgress:
-                        // Do nothing, the game continues.
+                        std::cout << "\n";
                         break;
+                        
                 }
+                // Check if AI is the next player, and play its move automatically after the player makes its move.
+                Player* nextPlayer = game.getCurrentPlayer();
+                    if (gameInProgress && !nextPlayer->isHuman()) {
+                        Move aiMove = nextPlayer->getMove(*(game.getBoard()));
+                        if (game.makeMove(aiMove)) {
+                            // --- After a successful AI move, check the game state AGAIN ---
+                            GameState aiMoveState = game.getGameState();
+                            std::string aiWinner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
 
+                            switch (aiMoveState) {
+                                case GameState::Checkmate:
+                                    std::cout << "Checkmate! " << aiWinner << " wins!" << std::endl;
+                                    gameInProgress = false;
+                                    break;
+                                case GameState::Stalemate:
+                                    std::cout << "Stalemate!" << std::endl;
+                                    gameInProgress = false;
+                                    break;
+                                case GameState::Check:
+                                    std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
+                                    break;
+                                case GameState::InProgress:
+                                    // Do nothing, the game continues.
+                                    break;
+                            }
+                        }
+                    }
             } else {
                 std::cout << "Invalid move." << std::endl;
-            }
-
-        } 
-        
-        else if (cmd == "resign" && gameInProgress) {
+            } 
+        }
+        } else if (cmd == "resign" && gameInProgress) {
             // Resign logic will go here
             game.resign();
             gameInProgress = false;
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "Black" : "White") << " wins!" << std::endl;
         
-        } 
-        
-        else if (cmd == "setup" && !gameInProgress) {
+        } else if (cmd == "setup" && !gameInProgress) {
             enterSetupMode(gameInProgress, tv);
-        }
-        else {
+        } else {
             if (cmd != "") {
                 std::cout << "Invalid Command." << endl;
                 std::cout << "Here is a list of Valid Commands: move pos1 pos2, resign, setup, game <human or computer[1-4]> <human or computer[1-4]>" << std::endl;
