@@ -16,8 +16,13 @@ static std::vector<Move> allMoves(const Board& b, Colour side) {
         for (int c = 0; c < 8; ++c) {
             const Piece* p = b.getPieceAt({r,c}); //Get piece at the coords
             if (p && p->getColour() == side) { //If there is a piece there, check if its the proper colour
-                auto mv = p->getValidMoves(b); // Get all the piece's legal moves
-                v.insert(v.end(), mv.begin(), mv.end()); // Add all moves to the big vector
+                auto potential_moves = p->getValidMoves(b); // Get all the piece's legal moves
+                for (const auto& move : potential_moves) {
+                    // This check ensures the move is actually legal (e.g., gets out of check)
+                    if (b.isMoveValid(move)) {
+                        v.push_back(move);
+                    }
+                }
             }
         }
     return v;

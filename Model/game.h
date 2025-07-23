@@ -14,6 +14,9 @@ private:
     std::unique_ptr<Player> blackPlayer;
     Player* currentPlayer; // A raw pointer to track the current player
 
+    float whiteScore;
+    float blackScore;
+
     GameState currentState;
     void updateGameState();
 
@@ -32,6 +35,9 @@ public:
     void setCurrentPlayer(Colour colour);
 
     GameState getGameState() const;
+
+    void resign();
+    void printFinalScore() const;
 
 };
 

@@ -10,7 +10,9 @@ Game::Game() :
     whitePlayer{nullptr}, 
     blackPlayer{nullptr}, 
     currentPlayer{nullptr}, 
-    currentState{GameState::InProgress} {};
+    whiteScore{0.0},
+    blackScore{0.0},
+    currentState{GameState::InProgress}{};
     
 
 
@@ -19,14 +21,38 @@ void Game::newGame(const std::string& white, const std::string& black) {
     if (white == "human") {
         whitePlayer = std::make_unique<HumanPlayer>(Colour::White);
     } else { // Assume "computer"
-        whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L1));
+        if (white == "computer1") { 
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L1)); 
+        }
+        else if (white == "computer2") {
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L2));
+        }
+        else if (white == "computer3") {
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
+        }
+        else {
+            std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl;
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
+        }
     }
 
     // Create the black player
     if (black == "human") {
         blackPlayer = std::make_unique<HumanPlayer>(Colour::Black);
     } else { // Assume "computer"
-        blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L1));
+        if (black == "computer1") { 
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L1)); 
+        }
+        else if (black == "computer2") {
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L2));
+        }
+        else if (black == "computer3") {
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L3));
+        }
+        else {
+            std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl;
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L3));
+        }
     }
     
     // White player always starts
@@ -108,8 +134,12 @@ void Game::updateGameState() {
     if (!hasLegalMove) {
         if (kingInDanger) {
             currentState = GameState::Checkmate;
+            if (currentPlayer->getColour() == Colour::White) blackScore += 1.0;
+            else whiteScore += 1.0;
         } else {
             currentState = GameState::Stalemate;
+            whiteScore += 0.5;
+            blackScore += 0.5;
         }
     } else {
         if (kingInDanger) {
@@ -139,4 +169,18 @@ void Game::setCurrentPlayer(Colour colour) {
 
 GameState Game::getGameState() const {
     return currentState;
+}
+
+void Game::resign() {
+    if (currentPlayer->getColour() == Colour::White) {
+        blackScore += 1.0;
+    } else {
+        whiteScore += 1.0;
+    }
+}
+
+void Game::printFinalScore() const {
+    std::cout << "Final Score:" << std::endl;
+    std::cout << "White: " << whiteScore << std::endl;
+    std::cout << "Black: " << blackScore << std::endl;
 }

@@ -19,7 +19,7 @@ void Controller::run() {
 
     // Create the view and attach it to the board
     std::unique_ptr<TextView> tv = nullptr;
-
+    std::cout << "Welcome to our game of Chess. Please enter on of the following to begin: 1.game <human or computer[1-4]> <human or computer[1-4]> 2. setup" << std::endl;
     while (std::getline(std::cin, line)) {
         std::stringstream ss{line};
         std::string cmd;
@@ -87,6 +87,7 @@ void Controller::run() {
         
         else if (cmd == "resign" && gameInProgress) {
             // Resign logic will go here
+            game.resign();
             gameInProgress = false;
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "Black" : "White") << " wins!" << std::endl;
         
@@ -94,9 +95,15 @@ void Controller::run() {
         
         else if (cmd == "setup" && !gameInProgress) {
             enterSetupMode(gameInProgress, tv);
-
+        }
+        else {
+            if (cmd != "") {
+                std::cout << "Invalid Command." << endl;
+                std::cout << "Here is a list of Valid Commands: move pos1 pos2, resign, setup, game <human or computer[1-4]> <human or computer[1-4]>" << std::endl;
+            }
         }
     }
+    game.printFinalScore();
 }
 
 void Controller::enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv) {
