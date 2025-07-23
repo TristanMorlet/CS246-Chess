@@ -104,6 +104,8 @@ void Controller::run() {
                                     continue;
                             }
                         }
+                    } else {
+                        break;
                     }
 
                 }
