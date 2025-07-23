@@ -207,6 +207,7 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
 
     Piece* capture = theBoard[move.to.row][move.to.col].get();
     if (capture) isCap = true;
+    else isCap = false;
     // Use std::move to transfer ownership of the piece
     theBoard[move.to.row][move.to.col] = std::move(theBoard[move.from.row][move.from.col]);
     
