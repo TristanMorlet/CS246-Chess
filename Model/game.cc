@@ -10,7 +10,9 @@ Game::Game() :
     whitePlayer{nullptr}, 
     blackPlayer{nullptr}, 
     currentPlayer{nullptr}, 
-    currentState{GameState::InProgress} {};
+    whiteScore{0.0},
+    blackScore{0.0},
+    currentState{GameState::InProgress}{};
     
 
 
@@ -132,8 +134,12 @@ void Game::updateGameState() {
     if (!hasLegalMove) {
         if (kingInDanger) {
             currentState = GameState::Checkmate;
+            if (currentPlayer->getColour() == Colour::White) blackScore += 1.0;
+            else whiteScore += 1.0;
         } else {
             currentState = GameState::Stalemate;
+            whiteScore += 0.5;
+            blackScore += 0.5;
         }
     } else {
         if (kingInDanger) {
@@ -163,4 +169,18 @@ void Game::setCurrentPlayer(Colour colour) {
 
 GameState Game::getGameState() const {
     return currentState;
+}
+
+void Game::resign() {
+    if (currentPlayer->getColour() == Colour::White) {
+        blackScore += 1.0;
+    } else {
+        whiteScore += 1.0;
+    }
+}
+
+void Game::printFinalScore() const {
+    std::cout << "Final Score:" << std::endl;
+    std::cout << "White: " << whiteScore << std::endl;
+    std::cout << "Black: " << blackScore << std::endl;
 }

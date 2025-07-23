@@ -87,6 +87,7 @@ void Controller::run() {
         
         else if (cmd == "resign" && gameInProgress) {
             // Resign logic will go here
+            game.resign();
             gameInProgress = false;
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "Black" : "White") << " wins!" << std::endl;
         
@@ -102,6 +103,7 @@ void Controller::run() {
             }
         }
     }
+    game.printFinalScore();
 }
 
 void Controller::enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv) {
