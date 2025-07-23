@@ -36,6 +36,7 @@ public:
     bool isDanger(const Coordinate& sq, Colour bw) const;       // Checks if a piece can be captured by other pieces.(NEW NOT IN UML)
     bool isEnPassantAvailable() const { return enPassantAvailable; } //Both new
     Coordinate getEnPassantSquare() const { return enPassantSquare; }
+    bool isMoveRuleVoilated() const;
 
 
     // --- Accessors (Getters) ---

@@ -116,6 +116,14 @@ bool Game::makeMove(const Move& m) {
 }
 
 void Game::updateGameState() {
+
+    if (board->isMoveRuleVoilated()) {
+        currentState = GameState::Stalemate;
+        whiteScore += 0.5;
+        blackScore += 0.5;
+        return; // Game is a draw, no need to check for checkmate
+    }
+    
     // 1. Find the current player's king
     Coordinate kingPos = {-1, -1};
     for (int r = 0; r < 8; ++r) {

@@ -351,3 +351,7 @@ void Board::notifyObservers(){
         ob->notify();
     }
 }
+
+bool Board::isMoveRuleVoilated() const {
+    return moveRule >= 100;
+}
