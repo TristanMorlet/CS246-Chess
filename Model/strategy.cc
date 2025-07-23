@@ -83,6 +83,29 @@ Move Level3::chooseMove(const Board& b, Colour side) {
 
 // --- LEVEL 4 ---
 // Proper ai. Probably use openai key
+// Prioritizes check sequences 
+// 
+Move Level3::chooseMove(const Board& b, Colour side) {
+    auto v = allMoves(b, side); // Get all valid moves
+    if (v.empty()) return {};
+    std::vector<Move> satisfied; // Vector for all moves that satisfy
+    satisfied.reserve(v.size()); 
+    for (const auto& m : v) {
+        const Piece* target = b.getPieceAt(m.to); // Get target square
+
+        // First if will be non dangeous capturing/checking moves
+        if ((target && target->getColour() != side && !b.isDanger(m.to, side))
+        || (target && std::tolower(target->getCharRepresentation()) == 'k' && target->getColour() != side && !b.isDanger(m.to, side))) {
+            satisfied.push_back(m); }
+
+        // Next if there are no safe capturing/checking moves, we'll just move safely.
+        if (!target && !b.isDanger(m.to, side)) satisfied.push_back(m);
+
+    } // If there are no satisfiable moves, we just use the regular set. 
+    if (satisfied.empty()) satisfied = v;
+    std::uniform_int_distribution<size_t> d(0, satisfied.size()-1);
+    return satisfied[d(rng)];
+}
 
 
 std::unique_ptr<Strategy> makeStrategy(Level lvl) {
