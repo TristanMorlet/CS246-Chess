@@ -6,15 +6,18 @@
 
 #include "../Model/game.h"
 #include "../View/textview.h"
+#include "../View/graphicalview.h" 
 #include <iostream>
 #include <string>
+#include <memory>
 
 class Controller {
     // temp owns board
     private:
         Game game;
         Coordinate parseCoordinate(const std::string& s);
-        void enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv);
+        void enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv, std::unique_ptr<GraphicalView>& gv);
+        void handleAiTurn(bool& gameInProgress);
 
     // later code
     // Game game;

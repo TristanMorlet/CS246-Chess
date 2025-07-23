@@ -1,6 +1,7 @@
 #include "../Controller/controller.h"
 /*
 FOR TREEE: g++20 main.cc ../Controller/controller.cc ../Model/game.cc ../Model/board.cc ../Model/strategy.cc ../Model/piece.cc ../Model/player.cc ../View/textview.cc 
+X11: g++20 main.cc ../Controller/controller.cc ../Model/game.cc ../Model/board.cc ../Model/strategy.cc ../Model/piece.cc ../Model/player.cc ../View/textview.cc ../View/graphicalview.cc ../View/window.cc -o chess_game -lX11 -L/usr/X11/lib -I/usr/X11/include
 */
 int main() {
     // 1. Create the Board. The constructor will set up the initial pieces.
