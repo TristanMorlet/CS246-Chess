@@ -31,7 +31,7 @@ void Game::newGame(const std::string& white, const std::string& black) {
             whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
         }
         else {
-            std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl;
+            std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl; // Lol I rock with this
             whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
         }
     }
@@ -79,7 +79,9 @@ bool Game::makeMove(const Move& m) {
                     else break;
                 }
             }
-            else promChoice = 'q'; //will need to change for cpu logic
+            else promChoice = 'q'; //will need to change for cpu logic 
+            // ^ Honestly I really dont feel like bothering. If we did the only scenario I could think of underpromoting
+            // is to avoid stalemate or some knight promotion chess puzzle bs
             }
         // If the move is valid, apply it to the board.
         board->applyMove(m, promChoice);
