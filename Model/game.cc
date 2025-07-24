@@ -1,8 +1,8 @@
 #include "game.h"
 #include "strategy.h"
-#include <memory>         // unique_ptr
-#include <string>         // std::string
-#include <cctype>         // std::tolower
+#include <memory>         
+#include <string>         
+#include <cctype>         
 #include <iostream>
 
 Game::Game() : 

@@ -2,8 +2,8 @@
 #define GRAPHICALVIEW_H
 
 #include "../View/observer.h"
-#include <memory> // For std::unique_ptr
-#include <vector> // Required for the state tracking vector
+#include <memory>
+#include <vector> 
 
 // Forward declarations
 class Board;

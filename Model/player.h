@@ -3,7 +3,7 @@
 
 #include "../types/types.h"
 #include "strategy.h"
-#include <memory> // Need for unique_ptr
+#include <memory> 
 
 class Board; // Forward declaration
 class Strategy; // New forward declaration

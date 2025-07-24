@@ -219,7 +219,7 @@ void Board::applyMove(const Move& move, char promChoice) { // New parameter for 
         p->setMoved();
     }
 
-    // --- Other Special Cases ---
+    //  Other Special Cases 
 
     // Pawn Promotion Logic
     // We check if promotion choice is changed (Only happens when a pawn promotion is valid)
