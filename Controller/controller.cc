@@ -89,10 +89,6 @@ void Controller::checkGameState(bool& gameInProgress) {
             std::cout << "Draw - Stalemate!" << std::endl;
             gameInProgress = false;
             break;
-        case GameState::MoveRule:
-            std::cout << "Draw - 50 Move Rule!" << std::endl;
-            gameInProgress = false;
-            break;
         case GameState::Check:
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
             break;
