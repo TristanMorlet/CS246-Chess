@@ -85,6 +85,10 @@ void Controller::checkGameState(bool& gameInProgress) {
             std::cout << "Stalemate!" << std::endl;
             gameInProgress = false;
             break;
+        case GameState::MoveRule:
+            std::cout << "Draw - 50 Move Rule!" << std::endl;
+            gameInProgress = false;
+            break;
         case GameState::Check:
             std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
             break;
@@ -104,32 +108,7 @@ void Controller::handleAiTurn(bool& gameInProgress) {
             break; 
         }
 
-<<<<<<< HEAD
-        GameState currentState = game.getGameState();
-        std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
-
-        switch (currentState) {
-            case GameState::Checkmate:
-                std::cout << "Checkmate! " << winner << " wins!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Stalemate:
-                std::cout << "Draw - Stalemate!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::MoveRule:
-                std::cout << "Draw - 50 Move Rule!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Check:
-                std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
-                break;
-            case GameState::InProgress:
-                break;
-        }
-=======
         checkGameState(gameInProgress);
->>>>>>> ab7768670ad562989110869a0939acab7d27a283
     }
 }
 
