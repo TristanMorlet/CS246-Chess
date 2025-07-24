@@ -217,6 +217,6 @@ std::vector<Move> Pawn::getValidMoves(const Board &b) const {
     }
 
     // Note: En passant and pawn promotion logic will be added here later.
-}
+
     return moves;
 }

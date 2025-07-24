@@ -11,7 +11,7 @@ void Controller::run() {
     std::unique_ptr<TextView> tv = nullptr;
     std::unique_ptr<GraphicalView> gv = nullptr;
 
-    std::cout << "Welcome to Chess! Enter 'game human human' to begin." << std::endl;
+    std::cout << "Welcome to Chess! Enter 'game human human' to begin or choose from computer1 - computer4." << std::endl;
 
     while (std::getline(std::cin, line)) {
         std::stringstream ss{line};
@@ -81,8 +81,12 @@ void Controller::checkGameState(bool& gameInProgress) {
             std::cout << "Checkmate! " << winner << " wins!" << std::endl;
             gameInProgress = false;
             break;
+        case GameState::MoveRule:
+            std::cout << "Draw - 50 Move Rule!" << std::endl;
+            gameInProgress = false;
+            break;
         case GameState::Stalemate:
-            std::cout << "Stalemate!" << std::endl;
+            std::cout << "Draw - Stalemate!" << std::endl;
             gameInProgress = false;
             break;
         case GameState::Check:
@@ -104,32 +108,7 @@ void Controller::handleAiTurn(bool& gameInProgress) {
             break; 
         }
 
-<<<<<<< HEAD
-        GameState currentState = game.getGameState();
-        std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
-
-        switch (currentState) {
-            case GameState::Checkmate:
-                std::cout << "Checkmate! " << winner << " wins!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Stalemate:
-                std::cout << "Draw - Stalemate!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::MoveRule:
-                std::cout << "Draw - 50 Move Rule!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Check:
-                std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
-                break;
-            case GameState::InProgress:
-                break;
-        }
-=======
         checkGameState(gameInProgress);
->>>>>>> ab7768670ad562989110869a0939acab7d27a283
     }
 }
 

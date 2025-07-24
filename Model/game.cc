@@ -104,7 +104,8 @@ bool Game::makeMove(const Move& m) {
             move_str += " ";
             move_str += colLetters[m.to.col];
             move_str += std::to_string(m.to.row + 1);
-            std::cout << '\n' << "AI plays move " << move_str << std::endl;
+            currentPlayer == whitePlayer.get() ? std::cout << '\n' << "White plays move " << move_str << std::endl :
+            std::cout << '\n' << "Black plays move " << move_str << std::endl;
 
             
 
