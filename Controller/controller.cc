@@ -1,5 +1,5 @@
 #include "controller.h"
-#include "../types/types.h" // Assuming you have a types.h for Colour, Coordinate etc.
+#include "../types/types.h" 
 #include <iostream>
 #include <string>
 #include <sstream>
