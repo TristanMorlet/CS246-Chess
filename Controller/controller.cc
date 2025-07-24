@@ -89,7 +89,11 @@ void Controller::handleAiTurn(bool& gameInProgress) {
                 gameInProgress = false;
                 break;
             case GameState::Stalemate:
-                std::cout << "Draw!" << std::endl;
+                std::cout << "Draw - Stalemate!" << std::endl;
+                gameInProgress = false;
+                break;
+            case GameState::MoveRule:
+                std::cout << "Draw - 50 Move Rule!" << std::endl;
                 gameInProgress = false;
                 break;
             case GameState::Check:

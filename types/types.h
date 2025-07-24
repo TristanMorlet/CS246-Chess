@@ -7,7 +7,8 @@ enum class GameState {
     InProgress,
     Check,
     Checkmate,
-    Stalemate
+    Stalemate,
+    MoveRule
 };
 
 struct Coordinate {

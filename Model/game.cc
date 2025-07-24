@@ -30,9 +30,12 @@ void Game::newGame(const std::string& white, const std::string& black) {
         else if (white == "computer3") {
             whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
         }
+        else if (white == "computer4") {
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L4));
+        }
         else {
             std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl; // Lol I rock with this
-            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L3));
+            whitePlayer = std::make_unique<ComputerPlayer>(Colour::White, makeStrategy(Level::L4));
         }
     }
 
@@ -49,9 +52,12 @@ void Game::newGame(const std::string& white, const std::string& black) {
         else if (black == "computer3") {
             blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L3));
         }
+        else if (black == "computer4") {
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L4));
+        }
         else {
             std::cout << "Since you didnt enter a valid player name, you will be facing the hardest ai..." << std::endl;
-            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L3));
+            blackPlayer = std::make_unique<ComputerPlayer>(Colour::Black, makeStrategy(Level::L4));
         }
     }
     
@@ -118,7 +124,7 @@ bool Game::makeMove(const Move& m) {
 void Game::updateGameState() {
 
     if (board->isMoveRuleVoilated()) {
-        currentState = GameState::Stalemate;
+        currentState = GameState::MoveRule;
         whiteScore += 0.5;
         blackScore += 0.5;
         return; // Game is a draw, no need to check for checkmate

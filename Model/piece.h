@@ -22,6 +22,7 @@ public:
     Colour getColour() const { return colour; }
     virtual std::vector<Move> getValidMoves(const Board&) const = 0; //method to find all valid moves for pieces
     virtual char getCharRepresentation() const = 0; //Get char representation for pieces
+    virtual int getMaterialValue() const = 0; // Get material value for pieces (NEW)
 
     //NEW METHODS NEEDED FOR BOARD
     virtual std::unique_ptr<Piece> clone() const = 0;   //For boards copy ctor to work
@@ -45,6 +46,7 @@ public:
     char getCharRepresentation() const override {
         return colour == Colour::White ? 'P' : 'p'; //For representation, White pieces are capital, black pieces are lowercase
     }
+    int getMaterialValue() const override { return 1; }
     bool just2Moved = false;
     std::unique_ptr<Piece> clone() const override {
         return std::make_unique<Pawn>(*this); // Creates a copy of the current Pawn
@@ -58,7 +60,7 @@ class Knight : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'N' : 'n';
         }
-
+        int getMaterialValue() const override { return 3; }
         std::unique_ptr<Piece> clone() const override {
             return std::make_unique<Knight>(*this); // Creates a copy of the current Pawn
         }
@@ -73,7 +75,7 @@ class Bishop : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'B' : 'b';
         }
-
+        int getMaterialValue() const override { return 3; }
         std::unique_ptr<Piece> clone() const override {
             return std::make_unique<Bishop>(*this); // Creates a copy of the current Pawn
         }
@@ -88,7 +90,7 @@ class Rook : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'R' : 'r';
         }
-
+        int getMaterialValue() const override { return 5; }
         std::unique_ptr<Piece> clone() const override {
             return std::make_unique<Rook>(*this); // Creates a copy of the current Pawn
         }
@@ -102,7 +104,7 @@ class Queen : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'Q' : 'q';
         }
-
+        int getMaterialValue() const override { return 9; }
         std::unique_ptr<Piece> clone() const override {
             return std::make_unique<Queen>(*this); // Creates a copy of the current Pawn
         }
@@ -115,7 +117,7 @@ class King : public Piece {
         char getCharRepresentation() const override {
             return colour == Colour::White ? 'K' : 'k';
         }
-
+        int getMaterialValue() const override { return 0; } // We'll never need this
         std::unique_ptr<Piece> clone() const override {
             return std::make_unique<King>(*this); // Creates a copy of the current Pawn
         }
