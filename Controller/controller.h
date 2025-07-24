@@ -14,7 +14,7 @@ class Controller {
         Coordinate parseCoordinate(const std::string& s);
         void enterSetupMode(bool& gameInProgress, std::unique_ptr<TextView>& tv, std::unique_ptr<GraphicalView>& gv);
         void handleAiTurn(bool& gameInProgress);
-
+        void checkGameState(bool& gameInProgress);
     public:
         void run();
 };

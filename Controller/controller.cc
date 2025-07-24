@@ -46,6 +46,7 @@ void Controller::run() {
 
                 if (game.makeMove(m)) {
                     // After a successful human move, check if the next player is an AI
+                    checkGameState(gameInProgress);
                     handleAiTurn(gameInProgress);
                 } else {
                     std::cout << "Invalid move." << std::endl;
@@ -69,6 +70,29 @@ void Controller::run() {
     game.printFinalScore();
 }
 
+void Controller::checkGameState(bool& gameInProgress) {
+    if (!gameInProgress) return;
+
+    GameState currentState = game.getGameState();
+    std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
+
+    switch (currentState) {
+        case GameState::Checkmate:
+            std::cout << "Checkmate! " << winner << " wins!" << std::endl;
+            gameInProgress = false;
+            break;
+        case GameState::Stalemate:
+            std::cout << "Stalemate!" << std::endl;
+            gameInProgress = false;
+            break;
+        case GameState::Check:
+            std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
+            break;
+        case GameState::InProgress:
+            break;
+    }
+}
+
 // Private helper to handle an AI's turn
 void Controller::handleAiTurn(bool& gameInProgress) {
     while (gameInProgress && !game.getCurrentPlayer()->isHuman()) {
@@ -80,24 +104,7 @@ void Controller::handleAiTurn(bool& gameInProgress) {
             break; 
         }
 
-        GameState currentState = game.getGameState();
-        std::string winner = (game.getCurrentPlayer()->getColour() == Colour::White) ? "Black" : "White";
-
-        switch (currentState) {
-            case GameState::Checkmate:
-                std::cout << "Checkmate! " << winner << " wins!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Stalemate:
-                std::cout << "Draw!" << std::endl;
-                gameInProgress = false;
-                break;
-            case GameState::Check:
-                std::cout << (game.getCurrentPlayer()->getColour() == Colour::White ? "White" : "Black") << " is in check." << std::endl;
-                break;
-            case GameState::InProgress:
-                break;
-        }
+        checkGameState(gameInProgress);
     }
 }
 
