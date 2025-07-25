@@ -35,29 +35,14 @@ class Strategy {
      class Level4 : public Strategy {
         public:
             Move chooseMove(const Board& b, Colour side) override;
-
-private:
-    // NEW: principal variation keeps the planned line so we "remember" next moves
-    std::vector<Move> pv;
-
-    // NEW: simple transposition table entry
-    struct TTEntry {
-        int depth;
-        int score;
-        Move best;
-        enum Flag { EXACT, LOWER, UPPER } flag;
-    };
-    // NEW: zobrist-keyed TT
-    std::unordered_map<uint64_t, TTEntry> tt;
-
-    int maxDepth = 4;                 // NEW: search depth knob
-    int search(Board& b, int depth, int alpha, int beta, Colour me, Move& bestOut); // NEW
-    int quiescence(Board& b, int alpha, int beta, Colour me);                       // NEW
-    int eval(const Board& b, Colour me) const;                                      // NEW
-    uint64_t hash(const Board& b) const;                                            // NEW
+            
+        private:
+            int ply = 3;
+            int eval(const Board& b, Colour side) const;
+            int minimax(Board& b, int depth, Colour root, bool maximizing, Move& bestOut, const Move& prev);
 };
 
     std::unique_ptr<Strategy> makeStrategy(Level lvl);
     
     
-    #endif
+#endif

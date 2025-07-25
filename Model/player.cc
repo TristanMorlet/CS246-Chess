@@ -31,7 +31,7 @@ Move ComputerPlayer::getMove(const Board& b) {
     // lvl one we hit any piece thats ours call getvalid moves and first valid move we just lowwe it?
     //lvl 2 we just call getvalid moves and first capture move we lowwe it
     // lvl 3 we call getvalidmoves and first safe capture move we lowwe it
-    //lvl 4 openai api key yessirr
+    //lvl 4 minimax algo
     return strat->chooseMove(b, colour);
 }
 
