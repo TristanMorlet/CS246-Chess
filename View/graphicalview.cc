@@ -58,8 +58,9 @@ void GraphicalView::display() {
 
                 // If there's a piece, draw it with its color
                 if (p) {
+                    int pieceColor = (p->getColour() == Colour::White) ? Xwindow::Red : Xwindow::Blue;
                     std::string piece_str(1, currentPieceChar);
-                    window->drawString(x + gridSize / 2, y + gridSize / 2, piece_str);
+                    window->drawString(x + gridSize / 2, y + gridSize / 2, piece_str, pieceColor);
                 }
                 
                 // Update the previous state for this square
