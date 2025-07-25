@@ -18,14 +18,13 @@ protected:
 public:
 
     virtual ~Piece() {} //dtor
-
-    Colour getColour() const { return colour; }
-    virtual std::vector<Move> getValidMoves(const Board&) const = 0; //method to find all valid moves for pieces
-    virtual char getCharRepresentation() const = 0; //Get char representation for pieces
+    Colour getColour() const { return colour; } // Get the colour of a piece
+    virtual std::vector<Move> getValidMoves(const Board&) const = 0; // Method to find all valid moves for pieces
+    virtual char getCharRepresentation() const = 0; // Get char representation for pieces
     virtual int getMaterialValue() const = 0; // Get material value for pieces (NEW)
 
     //NEW METHODS NEEDED FOR BOARD
-    virtual std::unique_ptr<Piece> clone() const = 0;   //For boards copy ctor to work
+    virtual std::unique_ptr<Piece> clone() const = 0;   // For boards copy ctor to work
 
     void setPosition(int r, int c) {
         row = r;
@@ -36,7 +35,9 @@ public:
         moved = false;
     }
     
-    bool hasMoved() const { return moved; }
+    bool hasMoved() const { // Method for tracking if a piece is moved (Used for 2 move and castling)
+        return moved;
+        }
 };
 
 class Pawn : public Piece {

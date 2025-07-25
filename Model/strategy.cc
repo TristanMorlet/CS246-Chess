@@ -183,7 +183,7 @@ int Level4::minimax(Board& b, int depth, Colour me, bool maximizing, Move& bestO
     return bestVal;
 }
 
-Move Level4::chooseMove(const Board& b, Colour side){
+Move Level4::chooseMove(const Board& b, Colour side){ // Now just choose the best move output by the algo
     Board temp = b;
     Move best{};
     minimax(temp, ply, side, true, best, Move{});
@@ -196,7 +196,7 @@ Move Level4::chooseMove(const Board& b, Colour side){
     return v[d(rng)];
 }
 
-// Factory method for choosing level
+// Factory(Strategy) method for choosing level
 std::unique_ptr<Strategy> makeStrategy(Level lvl) {
     switch (lvl) {
         case Level::L2: return std::make_unique<Level2>();
@@ -205,3 +205,5 @@ std::unique_ptr<Strategy> makeStrategy(Level lvl) {
         default:        return std::make_unique<Level1>();
     }
 }
+
+// hawk TUAH!!
