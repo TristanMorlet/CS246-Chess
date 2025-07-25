@@ -117,6 +117,8 @@ Move Level3::chooseMove(const Board& b, Colour side) {
 
 // --- LEVEL 4 ---
 // We use a minimax search algorithm with depth = 3
+// We can change depth in strategy.h (The time complexity is like O(n^2)^depthLevel so it doesnt do well on higher depths)
+// In the future we could even make depthLevel dynamic?
 
 // Find the current score of the position (my material value - their material valeu)
 int Level4::eval(const Board& b, Colour side) const {
@@ -158,7 +160,7 @@ int Level4::minimax(Board& b, int depth, Colour me, bool maximizing, Move& bestO
         temp.applyMove(m);
         Move ignore{};
          const Move nextPrev = maximizing ? m : prev;   
-        int score = minimax(temp, depth - 1, me, !maximizing, ignore, nextPrev); // Get the score of the next ply
+        int score = minimax(temp, depth - 1, me, !maximizing, ignore, nextPrev); // Get the score of the next depth level
 
         // Score penalty if the algorithm tries to shuffle
          if (prev.from.row == m.to.row && prev.from.col == m.to.col &&
@@ -167,7 +169,7 @@ int Level4::minimax(Board& b, int depth, Colour me, bool maximizing, Move& bestO
         }
 
         // Calculate the best move based on our score.
-        // If the score in the next ply is better than current, switch dat (2 ways depending on max/min)
+        // If the score in the next depth is better than current, switch dat (2 ways depending on max/min)
         if (maximizing) {
             if (score > bestVal) { 
                 bestVal = score;
@@ -186,7 +188,7 @@ int Level4::minimax(Board& b, int depth, Colour me, bool maximizing, Move& bestO
 Move Level4::chooseMove(const Board& b, Colour side){ // Now just choose the best move output by the algo
     Board temp = b;
     Move best{};
-    minimax(temp, ply, side, true, best, Move{});
+    minimax(temp, depthLevel, side, true, best, Move{});
     if (b.isMoveValid(best)) return best;
 
     // If there is somehow no best move, just return a move at random (failsafe)
@@ -196,7 +198,7 @@ Move Level4::chooseMove(const Board& b, Colour side){ // Now just choose the bes
     return v[d(rng)];
 }
 
-// Factory(Strategy) method for choosing level
+// Factory method for choosing level
 std::unique_ptr<Strategy> makeStrategy(Level lvl) {
     switch (lvl) {
         case Level::L2: return std::make_unique<Level2>();

@@ -37,7 +37,7 @@ class Strategy {
             Move chooseMove(const Board& b, Colour side) override;
             
         private:
-            int ply = 3;
+            int depthLevel = 3;
             int eval(const Board& b, Colour side) const;
             int minimax(Board& b, int depth, Colour root, bool maximizing, Move& bestOut, const Move& prev);
 };
