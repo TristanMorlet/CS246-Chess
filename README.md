@@ -1,1 +1,3 @@
-woaah bhai... type 'make' and then './chess'
+type 'make' and then './chess' to begin running this chess program.
+
+
